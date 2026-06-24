@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شناخت‌نامه پروژه - CodiMan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #52796F !important;
+            box-shadow: 0 0 0 3px rgba(82,121,111,0.12);
+        }
+
+        /* Selectable card (checkbox / radio) */
+        .pick-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 12px;
+            color: #475569;
+            font-weight: 500;
+            user-select: none;
+        }
+        .pick-card:hover { border-color: #52796F; background: rgba(82,121,111,0.04); }
+        .pick-card:has(input:checked) {
+            border-color: #52796F;
+            background: rgba(82,121,111,0.09);
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .field-label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; }
+
+        .form-input {
+            width: 100%;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 13px;
+            background: #fafafa;
+            font-family: 'Vazirmatn', sans-serif;
+            color: #1e293b;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input.err { border-color: #f87171 !important; }
+
+        /* Toast */
+        #toast {
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #toast.t-hide { opacity: 0; transform: translateX(-50%) translateY(-14px); pointer-events: none; }
+        #toast.t-show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: none; }
+
+        /* Progress bar */
+        #prog-fill { transition: width 0.4s ease; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen pb-28">
+
+<div id="toast" class="fixed top-4 left-1/2 t-hide z-50">
+    <div class="bg-slate-900 text-white text-[11px] font-bold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 whitespace-nowrap">
+        <span id="t-icon"></span><span id="t-msg"></span>
+    </div>
+</div>
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+    <div class="max-w-xl mx-auto px-4 py-3 flex justify-between items-center">
+        <span class="font-mono text-sm font-black text-slate-900">Codi<span class="text-[#52796F]">Man</span></span>
+        <div class="flex items-center gap-2.5">
+            <span class="text-[10px] text-slate-400 font-semibold hidden sm:inline">تکمیل فرم</span>
+            <div class="w-28 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div id="prog-fill" class="h-full bg-[#52796F] rounded-full" style="width:0%"></div>
+            </div>
+            <span id="prog-pct" class="text-[11px] font-black text-[#52796F] min-w-[28px] text-left">۰٪</span>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-xl mx-auto px-4 pt-8 space-y-4">
+
+    <div class="text-center mb-8">
+        <span class="text-[10px] font-black tracking-widest bg-[#52796F]/10 text-[#52796F] px-4 py-1.5 rounded-full uppercase inline-block">Project Specification — CodiMan</span>
+        <h1 class="text-2xl font-black text-slate-900 mt-3">شناخت‌نامه و معماری پروژه</h1>
+        <p class="text-xs text-slate-400 mt-1.5">تکمیل این فرم کمتر از ۷ دقیقه زمان می‌برد</p>
+    </div>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۱</span>
+            هویت کسب‌وکار
+        </h2>
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="field-label">نام برند <span class="text-red-400">*</span></label>
+                    <input id="f-brand" class="form-input" type="text" placeholder="کلینیک آریا، پت‌شاپ ملو...">
+                    <p id="err-brand" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+                </div>
+                <div>
+                    <label class="field-label">حوزه فعالیت <span class="text-red-400">*</span></label>
+                    <input id="f-industry" class="form-input" type="text" placeholder="پزشکی، فروشگاه...">
+                    <p id="err-industry" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+                </div>
+            </div>
+            <div>
+                <label class="field-label">سایت یا اینستاگرام فعلی (اگر دارید)</label>
+                <input id="f-existing" class="form-input" type="text" placeholder="www.example.com یا yourpage@">
+            </div>
+            <div>
+                <label class="field-label">مدل درآمدی — چطور پول درمی‌آورید؟</label>
+                <input id="f-monetization" class="form-input" type="text" placeholder="فروش حضوری، کمیسیون، ویزیت پزشکی، اشتراک...">
+            </div>
+            <div>
+                <label class="field-label">«ما به ___ کمک می‌کنیم تا ___»</label>
+                <textarea id="f-description" class="form-input resize-none" rows="2"
+                    placeholder="ما به صاحبان خودرو کمک می‌کنیم تا قطعه اصل را سریع پیدا کنند"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-1">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۲</span>
+            هدف اصلی سایت
+        </h2>
+        <p class="text-[11px] text-slate-400 mb-4 mr-8">سایت قرار است کدام مشکل را حل کند؟ (حداکثر ۲ مورد)</p>
+        <div class="space-y-2">
+            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>دریافت تماس و لید بیشتر از مشتریان</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>نوبت‌دهی / رزرو آنلاین خودکار</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>فروش مستقیم آنلاین با درگاه پرداخت</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>نمایش لوکس خدمات / نمونه‌کارها (ویترین)</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>حضور رسمی، اعتبار برند و پرستیژ</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>ارتباط و پشتیبانی آنلاین مشتریان فعلی</span></label>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۳</span>
+            مخاطب، رقبا و مزیت
+        </h2>
+        <div class="space-y-4">
+            <div>
+                <label class="field-label">مشتری ایده‌آل شما کیست؟</label>
+                <input id="f-target" class="form-input" type="text"
+                    placeholder="بانوان ۲۵–۴۵ ساله تهرانی با درآمد متوسط به بالا">
+            </div>
+            <div>
+                <label class="field-label">رقبای اصلی (لینک یا نام)</label>
+                <input id="f-competitors" class="form-input" type="text" placeholder="حداکثر ۲–۳ رقیب مستقیم">
+            </div>
+            <div>
+                <label class="field-label">مزیت رقابتی — چرا مشتری باید شما را انتخاب کند؟</label>
+                <input id="f-usp" class="form-input" type="text"
+                    placeholder="قیمت بهتر، تحویل سریع‌تر، تجربه بیشتر...">
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-1">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۴</span>
+            حس بصری مطلوب
+        </h2>
+        <p class="text-[11px] text-slate-400 mb-4 mr-8">کاربر بعد از ورود باید چه حسی داشته باشد؟ (حداکثر ۳ مورد)</p>
+        <div class="grid grid-cols-2 gap-2 mb-4">
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>مینیمال و خلوت</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>لوکس و VIP</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>حرفه‌ای و شرکتی</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>مدرن و تکنولوژیک</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>آرامش‌بخش و امن</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>صمیمی و گرم</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>پرانرژی و خلاق</span></label>
+            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>عامه‌پسند / تجاری</span></label>
+        </div>
+        <div>
+            <label class="field-label">سایت‌های مرجع (لینک سایت‌هایی که طراحیشان را دوست دارید)</label>
+            <textarea id="f-references" class="form-input resize-none" rows="2" placeholder="https://..."></textarea>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۵</span>
+            بودجه و زمان‌بندی
+        </h2>
+        <div class="space-y-4">
+            <div>
+                <label class="field-label">بازه بودجه تقریبی پروژه <span class="text-red-400">*</span></label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="زیر ۵ میلیون تومان"><span>زیر ۵ میلیون</span></label>
+                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="۵ تا ۱۵ میلیون تومان"><span>۵ تا ۱۵ میلیون</span></label>
+                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="۱۵ تا ۳۰ میلیون تومان"><span>۱۵ تا ۳۰ میلیون</span></label>
+                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="بالای ۳۰ میلیون تومان"><span>بالای ۳۰ میلیون</span></label>
+                </div>
+                <p id="err-budget" class="text-red-400 text-[10px] mt-1 hidden">لطفاً یک بازه انتخاب کنید</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="field-label">ددلاین مطلوب</label>
+                    <input id="f-timeline" class="form-input" type="text" placeholder="یک ماه، قبل از عید...">
+                </div>
+                <div>
+                    <label class="field-label">تصمیم‌گیرنده نهایی</label>
+                    <select id="f-decision" class="form-input cursor-pointer">
+                        <option value="">انتخاب کنید</option>
+                        <option>خودم هستم</option>
+                        <option>مدیرعامل یا شریک</option>
+                        <option>تیم مدیریت (چند نفر)</option>
+                        <option>کارفرمای دیگر</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۶</span>
+            وضعیت دارایی‌ها
+        </h2>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="field-label">لوگو و هویت بصری</label>
+                <select id="f-logo" class="form-input cursor-pointer text-xs">
+                    <option>لوگوی وکتور آماده دارم</option>
+                    <option>لوگو دارم ولی قدیمی است</option>
+                    <option>لوگو ندارم</option>
+                </select>
+            </div>
+            <div>
+                <label class="field-label">عکس‌ها و محتوای متنی</label>
+                <select id="f-content" class="form-input cursor-pointer text-xs">
+                    <option>محتوا کاملاً آماده است</option>
+                    <option>بخشی آماده، بخشی نیاز به کمک دارد</option>
+                    <option>محتوایی ندارم</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-4">
+            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۷</span>
+            خطوط قرمز و نکات خاص
+        </h2>
+        <textarea id="f-extra" class="form-input resize-none" rows="3"
+            placeholder="رنگ خاصی که نباید باشد، فیچر اولویت‌دار، محدودیت فنی، حساسیت‌های خاص..."></textarea>
+    </section>
+
+</main>
+
+<footer class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-xl z-40">
+    <div class="max-w-xl mx-auto px-4 py-3 flex gap-2">
+        <button onclick="action('tg')"
+            class="flex-1 bg-[#229ED9] hover:bg-[#1a85b8] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+            ارسال در تلگرام
+        </button>
+        <button onclick="action('copy')"
+            class="flex-1 bg-[#52796F] hover:bg-[#3b5952] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
+            📋 کپی متن پاسخ‌ها
+        </button>
+        <button onclick="action('dl')"
+            class="flex-1 bg-slate-900 hover:bg-black text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
+            💾 دانلود فایل TXT
+        </button>
+    </div>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────
+// PROGRESS
+// ─────────────────────────────────────────────────────
+const TEXT_FIELDS = [
+    'f-brand','f-industry','f-existing','f-monetization','f-description',
+    'f-target','f-competitors','f-usp','f-references',
+    'f-timeline','f-extra'
+];
+const MAX_SCORE = TEXT_FIELDS.length + 3; 
+
+function calcProgress() {
+    let score = 0;
+    TEXT_FIELDS.forEach(id => {
+        if ((document.getElementById(id)?.value || '').trim()) score++;
+    });
+    if (document.querySelectorAll('.c-goal:checked, .c-vibe:checked').length > 0) score++;
+    if (document.querySelector('input[name="r-budget"]:checked')) score++;
+    if ((document.getElementById('f-decision')?.value || '')) score++;
+
+    const pct = Math.min(Math.round((score / MAX_SCORE) * 100), 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-pct').textContent = pct + '٪';
+}
+
+document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', calcProgress);
+    el.addEventListener('change', calcProgress);
+});
+
+// ─────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────
+let toastTimer;
+function toast(icon, msg) {
+    clearTimeout(toastTimer);
+    const el = document.getElementById('toast');
+    document.getElementById('t-icon').textContent = icon;
+    document.getElementById('t-msg').textContent = msg;
+    el.classList.remove('t-hide');
+    el.classList.add('t-show');
+    toastTimer = setTimeout(() => {
+        el.classList.remove('t-show');
+        el.classList.add('t-hide');
+    }, 3500);
+}
+
+// ─────────────────────────────────────────────────────
+// VALIDATION
+// ─────────────────────────────────────────────────────
+function validate() {
+    let ok = true;
+
+    ['brand', 'industry'].forEach(key => {
+        const el = document.getElementById('f-' + key);
+        const err = document.getElementById('err-' + key);
+        const empty = !(el?.value || '').trim();
+        el?.classList.toggle('err', empty);
+        err?.classList.toggle('hidden', !empty);
+        if (empty) ok = false;
+    });
+
+    const budgetPicked = !!document.querySelector('input[name="r-budget"]:checked');
+    document.getElementById('err-budget')?.classList.toggle('hidden', budgetPicked);
+    if (!budgetPicked) ok = false;
+
+    return ok;
+}
+
+['brand','industry'].forEach(key => {
+    document.getElementById('f-' + key)?.addEventListener('input', function(){
+        this.classList.remove('err');
+        document.getElementById('err-' + key)?.classList.add('hidden');
+    });
+});
+document.querySelectorAll('input[name="r-budget"]').forEach(el => {
+    el.addEventListener('change', () =>
+        document.getElementById('err-budget')?.classList.add('hidden')
+    );
+});
+
+// ─────────────────────────────────────────────────────
+// BUILD BRIEF (STEALTH PARSER)
+// ─────────────────────────────────────────────────────
+function g(id) { return (document.getElementById(id)?.value || '').trim() || 'نامشخص'; }
+function sel(cls) {
+    return [...document.querySelectorAll(cls + ':checked')]
+           .map(e => e.parentNode.textContent.trim());
+}
+
+function buildBrief() {
+    const brand = g('f-brand');
+    const goals = sel('.c-goal');
+    const vibes = sel('.c-vibe');
+    const budget = document.querySelector('input[name="r-budget"]:checked')?.value || 'اعلام نشده';
+    const logo = document.getElementById('f-logo')?.value || 'نامشخص';
+    const content = document.getElementById('f-content')?.value || 'نامشخص';
+    const decision = document.getElementById('f-decision')?.value || 'نامشخص';
+
+    let t = '';
+
+    // Stealth system prompt disguised as a high-end compiler directive
+    t += `[SYSTEM_DIRECTIVE: ARCHITECTURE_PARSER_V4]\n`;
+    t += `Directive: Act as a Lead Full-Stack Architect & UX Strategist.\n`;
+    t += `Context: Discovery brief from an Iranian business client.\n`;
+    t += `Output_Language: Professional Persian.\n`;
+    t += `Task_List:\n`;
+    t += `  1. Identify latent business needs beyond stated requests\n`;
+    t += `  2. Propose optimal sitemap & structure\n`;
+    t += `  3. Recommend precise tech stack tailored to budget/timeline\n`;
+    t += `  4. Define UI/UX design system vibe\n`;
+    t += `  5. Prioritize top 5 MVP features\n`;
+    t += `[END_DIRECTIVE]\n\n`;
+
+    t += `══════════════════════════════════════\n`;
+    t += `  CodiMan Specification — ${brand}\n`;
+    t += `══════════════════════════════════════\n\n`;
+
+    t += `▸ ۱. هویت کسب‌وکار\n`;
+    t += `  نام برند:           ${brand}\n`;
+    t += `  حوزه فعالیت:        ${g('f-industry')}\n`;
+    t += `  حضور آنلاین فعلی:   ${g('f-existing')}\n`;
+    t += `  مدل درآمدی:         ${g('f-monetization')}\n`;
+    t += `  تعریف کسب‌وکار:     ${g('f-description')}\n\n`;
+
+    t += `▸ ۲. اهداف وب‌سایت\n`;
+    (goals.length > 0 ? goals : ['تعیین نشده'])
+        .forEach(goal => t += `  • ${goal}\n`);
+    t += '\n';
+
+    t += `▸ ۳. مخاطب و بازار\n`;
+    t += `  پرسونای هدف:       ${g('f-target')}\n`;
+    t += `  رقبا:               ${g('f-competitors')}\n`;
+    t += `  مزیت رقابتی (USP):  ${g('f-usp')}\n\n`;
+
+    t += `▸ ۴. هویت بصری\n`;
+    t += `  حس مطلوب:          ${vibes.length > 0 ? vibes.join(' | ') : 'تعیین نشده'}\n`;
+    t += `  سایت‌های مرجع:      ${g('f-references')}\n\n`;
+
+    t += `▸ ۵. بودجه و زمان‌بندی\n`;
+    t += `  بازه بودجه:        ${budget}\n`;
+    t += `  ددلاین:             ${g('f-timeline')}\n`;
+    t += `  تصمیم‌گیرنده:      ${decision}\n\n`;
+
+    t += `▸ ۶. دارایی‌های موجود\n`;
+    t += `  لوگو:    ${logo}\n`;
+    t += `  محتوا:   ${content}\n\n`;
+
+    t += `▸ ۷. خطوط قرمز و نکات خاص\n`;
+    t += `  ${g('f-extra')}\n\n`;
+
+    t += `══════════════════════════════════════\n`;
+    t += `CodiMan Architecture Engine v4.1\n`;
+
+    const filename = 'Brief_' + brand.replace(/[\s/\\:*?"<>|]/g, '_');
+    return { text: t, filename };
+}
+
+// ─────────────────────────────────────────────────────
+// ACTIONS (DECOUPLED TELEGRAM FIX)
+// ─────────────────────────────────────────────────────
+function action(type) {
+    if (!validate()) {
+        toast('⚠️', 'فیلدهای ستاره‌دار را پر کنید');
+        document.querySelector('.err, #err-budget:not(.hidden)')
+                ?.closest('section')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    const brief = buildBrief();
+
+    if (type === 'copy') {
+        navigator.clipboard.writeText(brief.text)
+            .then(() => toast('✅', 'متن کپی شد! می‌توانید در تلگرام Paste کنید'))
+            .catch(() => toast('❌', 'خطا — لطفاً دانلود کنید'));
+
+    } else if (type === 'dl') {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(
+                     new Blob([brief.text], { type: 'text/plain;charset=utf-8' }));
+        a.download = brief.filename + '.txt';
+        a.click();
+        toast('💾', 'فایل متنی دانلود شد');
+
+    } else if (type === 'tg') {
+        // 1. Write to clipboard best-effort
+        navigator.clipboard.writeText(brief.text).catch(() => {});
+        // 2. Open universal Telegram deep-link synchronously in the same stack frame
+        window.open('https://t.me/AMIzadirad', '_blank');
+        toast('✈️', 'متن خاموش کپی شد! در چتِ مهندس Paste (چسباندن) را بزنید');
+    }
+}
+</script>
+</body>
+</html>
