@@ -3,7 +3,7 @@
 ## Cursor Cloud specific instructions
 
 ### Product overview
-This repo is a single static page: `index.html`. It is the **CodiMan project brief intake form** — a Persian (RTL) 7-section questionnaire. On submit it validates required fields (brand, industry, budget), builds a text brief, and offers copy-to-clipboard, `.txt` download, and an "open Telegram" handoff. There is **no backend, database, build step, or package manager**.
+This repo is a single static page: `index.html`. It is the **CodiMan project brief intake form** — a Persian (RTL) 7-step wizard covering websites, web apps, Windows desktop software, mobile apps, and bots/automation/AI. Steps: project type → business identity → project scope & features (feature checklists appear conditionally per selected project type) → audience/market → design & assets → investment tier & timeline → contact info & final submit. Required fields: project type, brand, industry, project scope, budget tier, name, and phone/Telegram. Answers autosave to `localStorage` (key `codiman-brief-v2`). On the final step it builds a text brief and offers copy-to-clipboard, `.txt` download, and an "open Telegram" handoff. There is **no backend, database, build step, or package manager**.
 
 ### Running it
 Serve the file with any static server from the repo root, e.g.:

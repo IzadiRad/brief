@@ -29,6 +29,7 @@
             color: #475569;
             font-weight: 500;
             user-select: none;
+            background: #fff;
         }
         .pick-card:hover { border-color: #52796F; background: rgba(82,121,111,0.04); }
         .pick-card:has(input:checked) {
@@ -36,6 +37,26 @@
             background: rgba(82,121,111,0.09);
             color: #1e293b;
             font-weight: 700;
+        }
+
+        /* Rich tier card (budget) */
+        .tier-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            background: #fff;
+        }
+        .tier-card:hover { border-color: #52796F; background: rgba(82,121,111,0.04); }
+        .tier-card:has(input:checked) {
+            border-color: #52796F;
+            background: rgba(82,121,111,0.08);
+            box-shadow: 0 0 0 3px rgba(82,121,111,0.10);
         }
 
         .field-label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; }
@@ -53,18 +74,23 @@
         }
         .form-input.err { border-color: #f87171 !important; }
 
-        /* Toast */
-        #toast {
-            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        /* Wizard steps */
+        .step { display: none; }
+        .step.active { display: block; animation: stepIn 0.35s ease; }
+        @keyframes stepIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
+
+        /* Toast */
+        #toast { transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
         #toast.t-hide { opacity: 0; transform: translateX(-50%) translateY(-14px); pointer-events: none; }
         #toast.t-show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: none; }
 
-        /* Progress bar */
         #prog-fill { transition: width 0.4s ease; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen pb-28">
+<body class="bg-slate-50 min-h-screen pb-32">
 
 <div id="toast" class="fixed top-4 left-1/2 t-hide z-50">
     <div class="bg-slate-900 text-white text-[11px] font-bold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 whitespace-nowrap">
@@ -76,142 +102,310 @@
     <div class="max-w-xl mx-auto px-4 py-3 flex justify-between items-center">
         <span class="font-mono text-sm font-black text-slate-900">Codi<span class="text-[#52796F]">Man</span></span>
         <div class="flex items-center gap-2.5">
-            <span class="text-[10px] text-slate-400 font-semibold hidden sm:inline">تکمیل فرم</span>
+            <span id="step-counter" class="text-[10px] text-slate-400 font-semibold">مرحله ۱ از ۷</span>
             <div class="w-28 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                 <div id="prog-fill" class="h-full bg-[#52796F] rounded-full" style="width:0%"></div>
             </div>
-            <span id="prog-pct" class="text-[11px] font-black text-[#52796F] min-w-[28px] text-left">۰٪</span>
         </div>
     </div>
 </header>
 
-<main class="max-w-xl mx-auto px-4 pt-8 space-y-4">
+<main class="max-w-xl mx-auto px-4 pt-8">
 
     <div class="text-center mb-8">
-        <span class="text-[10px] font-black tracking-widest bg-[#52796F]/10 text-[#52796F] px-4 py-1.5 rounded-full uppercase inline-block">Project Specification — CodiMan</span>
-        <h1 class="text-2xl font-black text-slate-900 mt-3">شناخت‌نامه و معماری پروژه</h1>
-        <p class="text-xs text-slate-400 mt-1.5">تکمیل این فرم کمتر از ۷ دقیقه زمان می‌برد</p>
+        <span class="text-[10px] font-black tracking-widest bg-[#52796F]/10 text-[#52796F] px-4 py-1.5 rounded-full uppercase inline-block">Project Discovery — CodiMan</span>
+        <h1 class="text-2xl font-black text-slate-900 mt-3">شناخت‌نامه پروژه</h1>
+        <p class="text-xs text-slate-400 mt-1.5">حدود ۵ دقیقه زمان می‌برد — پاسخ‌ها به‌صورت خودکار ذخیره می‌شوند</p>
     </div>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۱</span>
-            هویت کسب‌وکار
-        </h2>
-        <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="field-label">نام برند <span class="text-red-400">*</span></label>
-                    <input id="f-brand" class="form-input" type="text" placeholder="کلینیک آریا، پت‌شاپ ملو...">
-                    <p id="err-brand" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+    <!-- ════════ STEP 1 : نوع پروژه ════════ -->
+    <section class="step" data-step="0">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <h2 class="text-sm font-black text-slate-800 mb-1">چه چیزی قرار است بسازیم؟</h2>
+            <p class="text-[11px] text-slate-400 mb-4">می‌توانید بیش از یک مورد انتخاب کنید <span class="text-red-400">*</span></p>
+            <div class="space-y-2">
+                <label class="pick-card"><input type="checkbox" class="c-type accent-[#52796F] shrink-0" data-key="web" value="وب‌سایت / فروشگاه آنلاین"><span>🌐 وب‌سایت یا فروشگاه آنلاین</span></label>
+                <label class="pick-card"><input type="checkbox" class="c-type accent-[#52796F] shrink-0" data-key="app" value="وب‌اپلیکیشن / سامانه تحت وب"><span>⚙️ وب‌اپلیکیشن یا سامانه تحت وب (پنل، داشبورد، SaaS)</span></label>
+                <label class="pick-card"><input type="checkbox" class="c-type accent-[#52796F] shrink-0" data-key="desktop" value="نرم‌افزار ویندوز (دسکتاپ)"><span>🖥️ نرم‌افزار ویندوز (دسکتاپ)</span></label>
+                <label class="pick-card"><input type="checkbox" class="c-type accent-[#52796F] shrink-0" data-key="mobile" value="اپلیکیشن موبایل"><span>📱 اپلیکیشن موبایل</span></label>
+                <label class="pick-card"><input type="checkbox" class="c-type accent-[#52796F] shrink-0" data-key="bot" value="ربات، اتوماسیون یا هوش مصنوعی"><span>🤖 ربات تلگرام، اتوماسیون یا هوش مصنوعی</span></label>
+                <label class="pick-card"><input type="checkbox" class="c-type accent-[#52796F] shrink-0" data-key="consult" value="مطمئن نیستم — نیاز به مشاوره دارم"><span>💡 مطمئن نیستم — نیاز به مشاوره دارم</span></label>
+            </div>
+            <p id="err-type" class="text-red-400 text-[10px] mt-2 hidden">لطفاً حداقل یک مورد را انتخاب کنید</p>
+
+            <div class="mt-6 pt-5 border-t border-slate-100">
+                <label class="field-label">وضعیت فعلی پروژه</label>
+                <div class="grid grid-cols-1 gap-2">
+                    <label class="pick-card"><input type="radio" name="r-status" class="accent-[#52796F] shrink-0" value="پروژه کاملاً جدید — از صفر"><span>پروژه کاملاً جدید است — از صفر شروع می‌کنیم</span></label>
+                    <label class="pick-card"><input type="radio" name="r-status" class="accent-[#52796F] shrink-0" value="بازطراحی / بازسازی نسخه فعلی"><span>نسخه‌ای دارم که باید بازطراحی یا بازسازی شود</span></label>
+                    <label class="pick-card"><input type="radio" name="r-status" class="accent-[#52796F] shrink-0" value="توسعه و ادامه پروژه موجود"><span>پروژه‌ای در حال کار دارم که باید توسعه پیدا کند</span></label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ STEP 2 : کسب‌وکار ════════ -->
+    <section class="step" data-step="1">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <h2 class="text-sm font-black text-slate-800 mb-5">کسب‌وکار شما</h2>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="field-label">نام برند / مجموعه <span class="text-red-400">*</span></label>
+                        <input id="f-brand" class="form-input" type="text" placeholder="کلینیک آریا، پت‌شاپ ملو...">
+                        <p id="err-brand" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+                    </div>
+                    <div>
+                        <label class="field-label">حوزه فعالیت <span class="text-red-400">*</span></label>
+                        <input id="f-industry" class="form-input" type="text" placeholder="پزشکی، فروشگاه، تولیدی...">
+                        <p id="err-industry" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+                    </div>
                 </div>
                 <div>
-                    <label class="field-label">حوزه فعالیت <span class="text-red-400">*</span></label>
-                    <input id="f-industry" class="form-input" type="text" placeholder="پزشکی، فروشگاه...">
-                    <p id="err-industry" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+                    <label class="field-label">سایت یا اینستاگرام فعلی (اگر دارید)</label>
+                    <input id="f-existing" class="form-input" type="text" placeholder="www.example.com یا yourpage@">
+                </div>
+                <div>
+                    <label class="field-label">مدل درآمدی — چطور کسب درآمد می‌کنید؟</label>
+                    <input id="f-monetization" class="form-input" type="text" placeholder="فروش حضوری، کمیسیون، ویزیت، اشتراک...">
+                </div>
+                <div>
+                    <label class="field-label">«ما به ___ کمک می‌کنیم تا ___»</label>
+                    <textarea id="f-description" class="form-input resize-none" rows="2"
+                        placeholder="ما به صاحبان خودرو کمک می‌کنیم تا قطعه اصل را سریع پیدا کنند"></textarea>
                 </div>
             </div>
-            <div>
-                <label class="field-label">سایت یا اینستاگرام فعلی (اگر دارید)</label>
-                <input id="f-existing" class="form-input" type="text" placeholder="www.example.com یا yourpage@">
-            </div>
-            <div>
-                <label class="field-label">مدل درآمدی — چطور پول درمی‌آورید؟</label>
-                <input id="f-monetization" class="form-input" type="text" placeholder="فروش حضوری، کمیسیون، ویزیت پزشکی، اشتراک...">
-            </div>
-            <div>
-                <label class="field-label">«ما به ___ کمک می‌کنیم تا ___»</label>
-                <textarea id="f-description" class="form-input resize-none" rows="2"
-                    placeholder="ما به صاحبان خودرو کمک می‌کنیم تا قطعه اصل را سریع پیدا کنند"></textarea>
-            </div>
         </div>
     </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-1">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۲</span>
-            هدف اصلی سایت
-        </h2>
-        <p class="text-[11px] text-slate-400 mb-4 mr-8">سایت قرار است کدام مشکل را حل کند؟ (حداکثر ۲ مورد)</p>
-        <div class="space-y-2">
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>دریافت تماس و لید بیشتر از مشتریان</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>نوبت‌دهی / رزرو آنلاین خودکار</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>فروش مستقیم آنلاین با درگاه پرداخت</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>نمایش لوکس خدمات / نمونه‌کارها (ویترین)</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>حضور رسمی، اعتبار برند و پرستیژ</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>ارتباط و پشتیبانی آنلاین مشتریان فعلی</span></label>
-        </div>
-    </section>
-
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۳</span>
-            مخاطب، رقبا و مزیت
-        </h2>
-        <div class="space-y-4">
+    <!-- ════════ STEP 3 : شرح پروژه و امکانات ════════ -->
+    <section class="step" data-step="2">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-6">
             <div>
-                <label class="field-label">مشتری ایده‌آل شما کیست؟</label>
-                <input id="f-target" class="form-input" type="text"
-                    placeholder="بانوان ۲۵–۴۵ ساله تهرانی با درآمد متوسط به بالا">
+                <h2 class="text-sm font-black text-slate-800 mb-1">شرح پروژه</h2>
+                <p class="text-[11px] text-slate-400 mb-3">به زبان خودتان بنویسید: چه چیزی باید بسازیم و چه مشکلی را حل می‌کند؟ <span class="text-red-400">*</span></p>
+                <textarea id="f-scope" class="form-input resize-none" rows="4"
+                    placeholder="مثلاً: یک فروشگاه آنلاین برای فروش قطعات خودرو می‌خواهم که مشتری بتواند با کد فنی جستجو کند و آنلاین پرداخت کند..."></textarea>
+                <p id="err-scope" class="text-red-400 text-[10px] mt-1 hidden">شرح پروژه برای ارائه راهکار درست، ضروری است</p>
             </div>
-            <div>
-                <label class="field-label">رقبای اصلی (لینک یا نام)</label>
-                <input id="f-competitors" class="form-input" type="text" placeholder="حداکثر ۲–۳ رقیب مستقیم">
-            </div>
-            <div>
-                <label class="field-label">مزیت رقابتی — چرا مشتری باید شما را انتخاب کند؟</label>
-                <input id="f-usp" class="form-input" type="text"
-                    placeholder="قیمت بهتر، تحویل سریع‌تر، تجربه بیشتر...">
-            </div>
-        </div>
-    </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-1">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۴</span>
-            حس بصری مطلوب
-        </h2>
-        <p class="text-[11px] text-slate-400 mb-4 mr-8">کاربر بعد از ورود باید چه حسی داشته باشد؟ (حداکثر ۳ مورد)</p>
-        <div class="grid grid-cols-2 gap-2 mb-4">
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>مینیمال و خلوت</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>لوکس و VIP</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>حرفه‌ای و شرکتی</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>مدرن و تکنولوژیک</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>آرامش‌بخش و امن</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>صمیمی و گرم</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>پرانرژی و خلاق</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>عامه‌پسند / تجاری</span></label>
-        </div>
-        <div>
-            <label class="field-label">سایت‌های مرجع (لینک سایت‌هایی که طراحیشان را دوست دارید)</label>
-            <textarea id="f-references" class="form-input resize-none" rows="2" placeholder="https://..."></textarea>
-        </div>
-    </section>
-
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۵</span>
-            بودجه و زمان‌بندی
-        </h2>
-        <div class="space-y-4">
             <div>
-                <label class="field-label">بازه بودجه تقریبی پروژه <span class="text-red-400">*</span></label>
+                <label class="field-label">مهم‌ترین نتیجه‌ای که از این پروژه انتظار دارید (حداکثر ۲ مورد)</label>
+                <div class="space-y-2">
+                    <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0" value="افزایش فروش و جذب مشتری جدید"><span>افزایش فروش و جذب مشتری جدید</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0" value="اتوماسیون و حذف کارهای دستی و تکراری"><span>اتوماسیون و حذف کارهای دستی و تکراری</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0" value="اعتبار برند و حضور حرفه‌ای"><span>اعتبار برند و حضور حرفه‌ای</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0" value="نظم و مدیریت بهتر کارهای داخلی"><span>نظم و مدیریت بهتر کارهای داخلی</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0" value="ایجاد کانال درآمدی جدید (آنلاین)"><span>ایجاد کانال درآمدی جدید (آنلاین)</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0" value="بهبود پشتیبانی و ارتباط با مشتریان فعلی"><span>بهبود پشتیبانی و ارتباط با مشتریان فعلی</span></label>
+                </div>
+            </div>
+
+            <!-- Conditional feature blocks (per project type) -->
+            <div data-feat="web" class="feat-block hidden">
+                <label class="field-label">امکانات وب‌سایت — چه چیزهایی لازم دارید؟</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="زیر ۵ میلیون تومان"><span>زیر ۵ میلیون</span></label>
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="۵ تا ۱۵ میلیون تومان"><span>۵ تا ۱۵ میلیون</span></label>
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="۱۵ تا ۳۰ میلیون تومان"><span>۱۵ تا ۳۰ میلیون</span></label>
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="بالای ۳۰ میلیون تومان"><span>بالای ۳۰ میلیون</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="وب‌سایت" value="فروش آنلاین و درگاه پرداخت"><span>فروش آنلاین و درگاه پرداخت</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="وب‌سایت" value="رزرو / نوبت‌دهی آنلاین"><span>رزرو / نوبت‌دهی آنلاین</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="وب‌سایت" value="وبلاگ و سئو (دیده شدن در گوگل)"><span>وبلاگ و سئو (گوگل)</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="وب‌سایت" value="پنل مدیریت محتوا (خودم آپدیت کنم)"><span>پنل مدیریت محتوا</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="وب‌سایت" value="چندزبانه"><span>چندزبانه</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="وب‌سایت" value="چت آنلاین / اتصال به واتساپ و تلگرام"><span>چت آنلاین / واتساپ و تلگرام</span></label>
                 </div>
-                <p id="err-budget" class="text-red-400 text-[10px] mt-1 hidden">لطفاً یک بازه انتخاب کنید</p>
+            </div>
+
+            <div data-feat="app" class="feat-block hidden">
+                <label class="field-label">امکانات سامانه تحت وب</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="سامانه تحت وب" value="ثبت‌نام و حساب کاربری"><span>ثبت‌نام و حساب کاربری</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="سامانه تحت وب" value="داشبورد مدیریتی و گزارش‌ها"><span>داشبورد و گزارش‌ها</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="سامانه تحت وب" value="پرداخت آنلاین / اشتراک"><span>پرداخت آنلاین / اشتراک</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="سامانه تحت وب" value="سطوح دسترسی کاربران (ادمین، اپراتور...)"><span>سطوح دسترسی کاربران</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="سامانه تحت وب" value="اتصال به سرویس‌ها و سیستم‌های دیگر (API)"><span>اتصال به سیستم‌های دیگر (API)</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="سامانه تحت وب" value="قابلیت نصب روی موبایل (PWA)"><span>قابل نصب روی موبایل (PWA)</span></label>
+                </div>
+            </div>
+
+            <div data-feat="desktop" class="feat-block hidden">
+                <label class="field-label">امکانات نرم‌افزار ویندوز</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="نرم‌افزار ویندوز" value="کار آفلاین بدون نیاز به اینترنت"><span>کار آفلاین (بدون اینترنت)</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="نرم‌افزار ویندوز" value="شبکه چند سیستمه با دیتابیس مرکزی"><span>شبکه چند سیستمه</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="نرم‌افزار ویندوز" value="اتصال به سخت‌افزار (بارکدخوان، فیش‌پرینتر، ترازو...)"><span>اتصال به سخت‌افزار (بارکدخوان...)</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="نرم‌افزار ویندوز" value="گزارش‌گیری و چاپ فاکتور"><span>گزارش‌گیری و چاپ فاکتور</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="نرم‌افزار ویندوز" value="سطوح دسترسی و مدیریت کاربران"><span>سطوح دسترسی کاربران</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="نرم‌افزار ویندوز" value="اتصال به وب‌سرویس / سایت / سیستم حسابداری"><span>اتصال به سایت / حسابداری</span></label>
+                </div>
+            </div>
+
+            <div data-feat="mobile" class="feat-block hidden">
+                <label class="field-label">امکانات اپلیکیشن موبایل</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="اپلیکیشن موبایل" value="اندروید"><span>اندروید</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="اپلیکیشن موبایل" value="iOS (آیفون)"><span>iOS (آیفون)</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="اپلیکیشن موبایل" value="انتشار در مارکت‌ها (کافه‌بازار، مایکت، گوگل‌پلی)"><span>انتشار در مارکت‌ها</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="اپلیکیشن موبایل" value="نوتیفیکیشن (اعلان)"><span>نوتیفیکیشن</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="اپلیکیشن موبایل" value="پرداخت درون‌برنامه‌ای"><span>پرداخت درون‌برنامه</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="اپلیکیشن موبایل" value="حساب کاربری و پنل مدیریت"><span>حساب کاربری و پنل مدیریت</span></label>
+                </div>
+            </div>
+
+            <div data-feat="bot" class="feat-block hidden">
+                <label class="field-label">امکانات ربات / اتوماسیون / هوش مصنوعی</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="ربات و اتوماسیون" value="ربات تلگرام (فروش، پشتیبانی، اطلاع‌رسانی)"><span>ربات تلگرام</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="ربات و اتوماسیون" value="چت‌بات هوش مصنوعی"><span>چت‌بات هوش مصنوعی</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="ربات و اتوماسیون" value="اتوماسیون فرآیندهای تکراری"><span>اتوماسیون فرآیندها</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="ربات و اتوماسیون" value="اتصال به اکسل / سیستم‌های موجود"><span>اتصال به اکسل / سیستم‌ها</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="ربات و اتوماسیون" value="پردازش و تحلیل داده"><span>پردازش و تحلیل داده</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-feat accent-[#52796F]" data-g="ربات و اتوماسیون" value="ارسال خودکار پیامک / ایمیل / پیام"><span>ارسال خودکار پیام</span></label>
+                </div>
+            </div>
+
+            <div>
+                <label class="field-label">امکان یا نکته حیاتی دیگری که حتماً باید باشد؟</label>
+                <input id="f-mustfeat" class="form-input" type="text" placeholder="مثلاً: اتصال به نرم‌افزار حسابداری هلو، پیامک خودکار به مشتری...">
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ STEP 4 : مخاطب و بازار ════════ -->
+    <section class="step" data-step="3">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <h2 class="text-sm font-black text-slate-800 mb-1">مخاطب، رقبا و مزیت شما</h2>
+            <p class="text-[11px] text-slate-400 mb-5">این بخش به ما کمک می‌کند راهکار را دقیقاً برای بازار شما طراحی کنیم</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="field-label">کاربر / مشتری ایده‌آل شما کیست؟</label>
+                    <input id="f-target" class="form-input" type="text"
+                        placeholder="بانوان ۲۵–۴۵ ساله تهرانی، مدیران فروشگاه، پرسنل داخلی شرکت...">
+                </div>
+                <div>
+                    <label class="field-label">رقبا یا نمونه‌های مشابه (لینک یا نام)</label>
+                    <input id="f-competitors" class="form-input" type="text" placeholder="حداکثر ۲–۳ نمونه مستقیم">
+                </div>
+                <div>
+                    <label class="field-label">مزیت رقابتی — چرا مشتری باید شما را انتخاب کند؟</label>
+                    <input id="f-usp" class="form-input" type="text"
+                        placeholder="قیمت بهتر، تحویل سریع‌تر، تجربه بیشتر، خدمات خاص...">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ STEP 5 : طراحی و دارایی‌ها ════════ -->
+    <section class="step" data-step="4">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-sm font-black text-slate-800 mb-1">حس و حال طراحی</h2>
+                <p class="text-[11px] text-slate-400 mb-4">کاربر بعد از ورود باید چه حسی بگیرد؟ (حداکثر ۳ مورد)</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="مینیمال و خلوت"><span>مینیمال و خلوت</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="لوکس و VIP"><span>لوکس و VIP</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="حرفه‌ای و شرکتی"><span>حرفه‌ای و شرکتی</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="مدرن و تکنولوژیک"><span>مدرن و تکنولوژیک</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="آرامش‌بخش و امن"><span>آرامش‌بخش و امن</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="صمیمی و گرم"><span>صمیمی و گرم</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="پرانرژی و خلاق"><span>پرانرژی و خلاق</span></label>
+                    <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]" value="ساده و کاربردی"><span>ساده و کاربردی</span></label>
+                </div>
+            </div>
+            <div>
+                <label class="field-label">نمونه‌های مرجع — لینک سایت یا نرم‌افزاری که طراحی‌اش را دوست دارید</label>
+                <textarea id="f-references" class="form-input resize-none" rows="2" placeholder="https://..."></textarea>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <div>
-                    <label class="field-label">ددلاین مطلوب</label>
-                    <input id="f-timeline" class="form-input" type="text" placeholder="یک ماه، قبل از عید...">
+                    <label class="field-label">لوگو و هویت بصری</label>
+                    <select id="f-logo" class="form-input cursor-pointer text-xs">
+                        <option value="">انتخاب کنید</option>
+                        <option>لوگوی آماده و باکیفیت دارم</option>
+                        <option>لوگو دارم ولی نیاز به بازطراحی دارد</option>
+                        <option>لوگو ندارم — طراحی‌اش هم لازم است</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">عکس‌ها و محتوای متنی</label>
+                    <select id="f-content" class="form-input cursor-pointer text-xs">
+                        <option value="">انتخاب کنید</option>
+                        <option>محتوا کاملاً آماده است</option>
+                        <option>بخشی آماده است، بخشی نیاز به کمک دارد</option>
+                        <option>محتوایی ندارم — تولیدش هم لازم است</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════ STEP 6 : بودجه و زمان‌بندی ════════ -->
+    <section class="step" data-step="5">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-sm font-black text-slate-800 mb-1">سطح سرمایه‌گذاری <span class="text-red-400">*</span></h2>
+                <p class="text-[11px] text-slate-400 mb-4">این انتخاب فقط برای طراحی راهکارِ متناسب استفاده می‌شود و هیچ تعهدی ایجاد نمی‌کند — قیمت دقیق بعد از بررسی، شفاف اعلام می‌شود.</p>
+                <div class="space-y-2">
+                    <label class="tier-card">
+                        <input type="radio" name="r-budget" class="accent-[#52796F] mt-1 shrink-0" value="شروع هوشمند (MVP) — حدود ۳۰ تا ۷۰ میلیون تومان">
+                        <span>
+                            <span class="block text-[12px] font-black text-slate-800">شروع هوشمند (MVP)</span>
+                            <span class="block text-[10.5px] text-slate-400 mt-0.5">نسخه اول کاربردی برای شروع سریع و تست بازار — حدود ۳۰ تا ۷۰ میلیون تومان</span>
+                        </span>
+                    </label>
+                    <label class="tier-card">
+                        <input type="radio" name="r-budget" class="accent-[#52796F] mt-1 shrink-0" value="حرفه‌ای — حدود ۷۰ تا ۱۸۰ میلیون تومان">
+                        <span>
+                            <span class="block text-[12px] font-black text-slate-800">حرفه‌ای</span>
+                            <span class="block text-[10.5px] text-slate-400 mt-0.5">طراحی اختصاصی با امکانات کامل و کیفیت ماندگار — حدود ۷۰ تا ۱۸۰ میلیون تومان</span>
+                        </span>
+                    </label>
+                    <label class="tier-card">
+                        <input type="radio" name="r-budget" class="accent-[#52796F] mt-1 shrink-0" value="پرمیوم — حدود ۱۸۰ تا ۴۰۰ میلیون تومان">
+                        <span>
+                            <span class="block text-[12px] font-black text-slate-800">پرمیوم</span>
+                            <span class="block text-[10.5px] text-slate-400 mt-0.5">راهکار سطح بالا برای برندهای جدی با نیازهای خاص — حدود ۱۸۰ تا ۴۰۰ میلیون تومان</span>
+                        </span>
+                    </label>
+                    <label class="tier-card">
+                        <input type="radio" name="r-budget" class="accent-[#52796F] mt-1 shrink-0" value="سازمانی — بالای ۴۰۰ میلیون تومان">
+                        <span>
+                            <span class="block text-[12px] font-black text-slate-800">سازمانی</span>
+                            <span class="block text-[10.5px] text-slate-400 mt-0.5">سامانه جامع با معماری مقیاس‌پذیر و پشتیبانی بلندمدت — بالای ۴۰۰ میلیون تومان</span>
+                        </span>
+                    </label>
+                    <label class="tier-card">
+                        <input type="radio" name="r-budget" class="accent-[#52796F] mt-1 shrink-0" value="هنوز مشخص نیست — بر اساس مشاوره و پیشنهاد تصمیم می‌گیرم">
+                        <span>
+                            <span class="block text-[12px] font-black text-slate-800">هنوز مشخص نیست</span>
+                            <span class="block text-[10.5px] text-slate-400 mt-0.5">ترجیح می‌دهم بعد از مشاوره و دیدن پیشنهاد، تصمیم بگیرم</span>
+                        </span>
+                    </label>
+                </div>
+                <p id="err-budget" class="text-red-400 text-[10px] mt-2 hidden">لطفاً یک گزینه انتخاب کنید</p>
+            </div>
+
+            <div>
+                <label class="field-label">در این پروژه کدام‌یک برای شما مهم‌تر است؟</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="pick-card justify-center text-center"><input type="radio" name="r-priority" class="accent-[#52796F] hidden" value="کیفیت و ماندگاری"><span>کیفیت و ماندگاری</span></label>
+                    <label class="pick-card justify-center text-center"><input type="radio" name="r-priority" class="accent-[#52796F] hidden" value="سرعت رسیدن به بازار"><span>سرعت تحویل</span></label>
+                    <label class="pick-card justify-center text-center"><input type="radio" name="r-priority" class="accent-[#52796F] hidden" value="کنترل هزینه"><span>کنترل هزینه</span></label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="field-label">زمان‌بندی مطلوب</label>
+                    <select id="f-timeline" class="form-input cursor-pointer text-xs">
+                        <option value="">انتخاب کنید</option>
+                        <option>فوری — کمتر از یک ماه</option>
+                        <option>۱ تا ۲ ماه</option>
+                        <option>۲ تا ۴ ماه</option>
+                        <option>منعطف — کیفیت مهم‌تر از زمان است</option>
+                    </select>
                 </div>
                 <div>
                     <label class="field-label">تصمیم‌گیرنده نهایی</label>
-                    <select id="f-decision" class="form-input cursor-pointer">
+                    <select id="f-decision" class="form-input cursor-pointer text-xs">
                         <option value="">انتخاب کنید</option>
                         <option>خودم هستم</option>
                         <option>مدیرعامل یا شریک</option>
@@ -220,104 +414,115 @@
                     </select>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۶</span>
-            وضعیت دارایی‌ها
-        </h2>
-        <div class="grid grid-cols-2 gap-3">
             <div>
-                <label class="field-label">لوگو و هویت بصری</label>
-                <select id="f-logo" class="form-input cursor-pointer text-xs">
-                    <option>لوگوی وکتور آماده دارم</option>
-                    <option>لوگو دارم ولی قدیمی است</option>
-                    <option>لوگو ندارم</option>
-                </select>
-            </div>
-            <div>
-                <label class="field-label">عکس‌ها و محتوای متنی</label>
-                <select id="f-content" class="form-input cursor-pointer text-xs">
-                    <option>محتوا کاملاً آماده است</option>
-                    <option>بخشی آماده، بخشی نیاز به کمک دارد</option>
-                    <option>محتوایی ندارم</option>
+                <label class="field-label">پشتیبانی و توسعه بعد از تحویل</label>
+                <select id="f-support" class="form-input cursor-pointer text-xs">
+                    <option value="">انتخاب کنید</option>
+                    <option>بله — پشتیبانی و توسعه مستمر می‌خواهم</option>
+                    <option>فعلاً فقط تحویل پروژه</option>
+                    <option>بعداً تصمیم می‌گیرم</option>
                 </select>
             </div>
         </div>
     </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-4">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۷</span>
-            خطوط قرمز و نکات خاص
-        </h2>
-        <textarea id="f-extra" class="form-input resize-none" rows="3"
-            placeholder="رنگ خاصی که نباید باشد، فیچر اولویت‌دار، محدودیت فنی، حساسیت‌های خاص..."></textarea>
+    <!-- ════════ STEP 7 : تماس و ثبت نهایی ════════ -->
+    <section class="step" data-step="6">
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-4">
+            <div>
+                <h2 class="text-sm font-black text-slate-800 mb-1">اطلاعات تماس و ثبت نهایی</h2>
+                <p class="text-[11px] text-slate-400">بعد از بررسی شناخت‌نامه، حداکثر ظرف ۲۴ ساعت کاری با شما تماس می‌گیریم</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="field-label">نام و نام خانوادگی <span class="text-red-400">*</span></label>
+                    <input id="f-name" class="form-input" type="text" placeholder="نام شما">
+                    <p id="err-name" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
+                </div>
+                <div>
+                    <label class="field-label">شماره تماس یا آیدی تلگرام <span class="text-red-400">*</span></label>
+                    <input id="f-phone" class="form-input" type="text" dir="ltr" style="text-align:right" placeholder="0912... یا @id">
+                    <p id="err-phone" class="text-red-400 text-[10px] mt-1 hidden">برای هماهنگی لازم است</p>
+                </div>
+            </div>
+            <div>
+                <label class="field-label">بهترین زمان تماس</label>
+                <select id="f-calltime" class="form-input cursor-pointer text-xs">
+                    <option value="">فرقی نمی‌کند</option>
+                    <option>صبح (۹ تا ۱۲)</option>
+                    <option>بعدازظهر (۱۲ تا ۱۷)</option>
+                    <option>عصر و شب (۱۷ تا ۲۱)</option>
+                    <option>فقط پیام بدهید (تلگرام / واتساپ)</option>
+                </select>
+            </div>
+            <div>
+                <label class="field-label">خطوط قرمز یا نکته پایانی</label>
+                <textarea id="f-extra" class="form-input resize-none" rows="3"
+                    placeholder="رنگی که نباید باشد، محدودیت فنی، حساسیت خاص، هر چیزی که باید بدانیم..."></textarea>
+            </div>
+            <div class="bg-[#52796F]/5 border border-[#52796F]/20 rounded-xl p-4">
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                    <span class="font-black text-[#52796F]">ثبت نهایی:</span>
+                    با یکی از دکمه‌های پایین، شناخت‌نامه را برای ما ارسال کنید. سریع‌ترین راه، دکمه «ارسال در تلگرام» است — متن به‌صورت خودکار کپی می‌شود و کافی است در چت Paste کنید.
+                </p>
+            </div>
+        </div>
     </section>
 
 </main>
 
 <footer class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-xl z-40">
-    <div class="max-w-xl mx-auto px-4 py-3 flex gap-2">
-        <button onclick="action('tg')"
-            class="flex-1 bg-[#229ED9] hover:bg-[#1a85b8] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
-            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-            </svg>
-            ارسال در تلگرام
+    <!-- Navigation (steps 1..6) -->
+    <div id="nav-bar" class="max-w-xl mx-auto px-4 py-3 flex gap-2">
+        <button id="btn-prev" onclick="go(-1)"
+            class="w-28 bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 invisible">
+            → قبلی
         </button>
-        <button onclick="action('copy')"
-            class="flex-1 bg-[#52796F] hover:bg-[#3b5952] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
-            📋 کپی متن پاسخ‌ها
+        <button id="btn-next" onclick="go(1)"
+            class="flex-1 bg-[#52796F] hover:bg-[#3b5952] text-white text-[12px] font-black py-3.5 rounded-2xl transition-all active:scale-95">
+            مرحله بعد ←
         </button>
-        <button onclick="action('dl')"
-            class="flex-1 bg-slate-900 hover:bg-black text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
-            💾 دانلود فایل TXT
-        </button>
+    </div>
+    <!-- Final actions (step 7) -->
+    <div id="action-bar" class="max-w-xl mx-auto px-4 py-3 hidden">
+        <div class="flex gap-2">
+            <button id="btn-prev2" onclick="go(-1)"
+                class="w-14 bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95">→</button>
+            <button onclick="action('tg')"
+                class="flex-1 bg-[#229ED9] hover:bg-[#1a85b8] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+                ارسال در تلگرام
+            </button>
+            <button onclick="action('copy')"
+                class="flex-1 bg-[#52796F] hover:bg-[#3b5952] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95">
+                📋 کپی متن
+            </button>
+            <button onclick="action('dl')"
+                class="flex-1 bg-slate-900 hover:bg-black text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95">
+                💾 دانلود TXT
+            </button>
+        </div>
     </div>
 </footer>
 
 <script>
 // ─────────────────────────────────────────────────────
-// PROGRESS
+// HELPERS
 // ─────────────────────────────────────────────────────
-const TEXT_FIELDS = [
-    'f-brand','f-industry','f-existing','f-monetization','f-description',
-    'f-target','f-competitors','f-usp','f-references',
-    'f-timeline','f-extra'
-];
-const MAX_SCORE = TEXT_FIELDS.length + 3; 
+const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const $  = id => document.getElementById(id);
+const val = id => ($(id)?.value || '').trim();
+const checked = sel => [...document.querySelectorAll(sel + ':checked')];
 
-function calcProgress() {
-    let score = 0;
-    TEXT_FIELDS.forEach(id => {
-        if ((document.getElementById(id)?.value || '').trim()) score++;
-    });
-    if (document.querySelectorAll('.c-goal:checked, .c-vibe:checked').length > 0) score++;
-    if (document.querySelector('input[name="r-budget"]:checked')) score++;
-    if ((document.getElementById('f-decision')?.value || '')) score++;
-
-    const pct = Math.min(Math.round((score / MAX_SCORE) * 100), 100);
-    document.getElementById('prog-fill').style.width = pct + '%';
-    document.getElementById('prog-pct').textContent = pct + '٪';
-}
-
-document.querySelectorAll('input, textarea, select').forEach(el => {
-    el.addEventListener('input', calcProgress);
-    el.addEventListener('change', calcProgress);
-});
-
-// ─────────────────────────────────────────────────────
-// TOAST
-// ─────────────────────────────────────────────────────
 let toastTimer;
 function toast(icon, msg) {
     clearTimeout(toastTimer);
-    const el = document.getElementById('toast');
-    document.getElementById('t-icon').textContent = icon;
-    document.getElementById('t-msg').textContent = msg;
+    $('t-icon').textContent = icon;
+    $('t-msg').textContent = msg;
+    const el = $('toast');
     el.classList.remove('t-hide');
     el.classList.add('t-show');
     toastTimer = setTimeout(() => {
@@ -327,125 +532,274 @@ function toast(icon, msg) {
 }
 
 // ─────────────────────────────────────────────────────
-// VALIDATION
+// WIZARD
 // ─────────────────────────────────────────────────────
-function validate() {
+const TOTAL = 7;
+let step = 0;
+
+function render() {
+    document.querySelectorAll('.step').forEach(s =>
+        s.classList.toggle('active', +s.dataset.step === step));
+
+    $('step-counter').textContent = 'مرحله ' + fa(step + 1) + ' از ' + fa(TOTAL);
+    $('prog-fill').style.width = Math.round(((step + 1) / TOTAL) * 100) + '%';
+
+    $('btn-prev').classList.toggle('invisible', step === 0);
+    $('nav-bar').classList.toggle('hidden', step === TOTAL - 1);
+    $('action-bar').classList.toggle('hidden', step !== TOTAL - 1);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function markErr(id, bad) {
+    $('f-' + id)?.classList.toggle('err', bad);
+    $('err-' + id)?.classList.toggle('hidden', !bad);
+}
+
+function validateStep(s) {
     let ok = true;
-
-    ['brand', 'industry'].forEach(key => {
-        const el = document.getElementById('f-' + key);
-        const err = document.getElementById('err-' + key);
-        const empty = !(el?.value || '').trim();
-        el?.classList.toggle('err', empty);
-        err?.classList.toggle('hidden', !empty);
-        if (empty) ok = false;
-    });
-
-    const budgetPicked = !!document.querySelector('input[name="r-budget"]:checked');
-    document.getElementById('err-budget')?.classList.toggle('hidden', budgetPicked);
-    if (!budgetPicked) ok = false;
-
+    if (s === 0) {
+        const any = checked('.c-type').length > 0;
+        $('err-type').classList.toggle('hidden', any);
+        if (!any) ok = false;
+    }
+    if (s === 1) {
+        ['brand', 'industry'].forEach(k => {
+            const bad = !val('f-' + k);
+            markErr(k, bad);
+            if (bad) ok = false;
+        });
+    }
+    if (s === 2) {
+        const bad = !val('f-scope');
+        markErr('scope', bad);
+        if (bad) ok = false;
+    }
+    if (s === 5) {
+        const picked = !!document.querySelector('input[name="r-budget"]:checked');
+        $('err-budget').classList.toggle('hidden', picked);
+        if (!picked) ok = false;
+    }
+    if (s === 6) {
+        ['name', 'phone'].forEach(k => {
+            const bad = !val('f-' + k);
+            markErr(k, bad);
+            if (bad) ok = false;
+        });
+    }
     return ok;
 }
 
-['brand','industry'].forEach(key => {
-    document.getElementById('f-' + key)?.addEventListener('input', function(){
-        this.classList.remove('err');
-        document.getElementById('err-' + key)?.classList.add('hidden');
+function go(dir) {
+    if (dir === 1 && !validateStep(step)) {
+        toast('⚠️', 'لطفاً موارد مشخص‌شده را تکمیل کنید');
+        return;
+    }
+    step = Math.min(Math.max(step + dir, 0), TOTAL - 1);
+    render();
+}
+
+// ─────────────────────────────────────────────────────
+// CONDITIONAL FEATURE BLOCKS
+// ─────────────────────────────────────────────────────
+function syncFeatureBlocks() {
+    const keys = checked('.c-type').map(el => el.dataset.key);
+    document.querySelectorAll('.feat-block').forEach(block => {
+        const show = keys.includes(block.dataset.feat);
+        block.classList.toggle('hidden', !show);
+        if (!show) block.querySelectorAll('input:checked').forEach(el => el.checked = false);
+    });
+}
+document.querySelectorAll('.c-type').forEach(el => {
+    el.addEventListener('change', () => {
+        $('err-type').classList.add('hidden');
+        syncFeatureBlocks();
     });
 });
-document.querySelectorAll('input[name="r-budget"]').forEach(el => {
-    el.addEventListener('change', () =>
-        document.getElementById('err-budget')?.classList.add('hidden')
-    );
+
+// Max-selection limits
+function limit(sel, max, label) {
+    document.querySelectorAll(sel).forEach(el => {
+        el.addEventListener('change', () => {
+            if (el.checked && checked(sel).length > max) {
+                el.checked = false;
+                toast('✋', 'حداکثر ' + fa(max) + ' مورد — ' + label);
+                save();
+            }
+        });
+    });
+}
+limit('.c-goal', 2, 'مهم‌ترین‌ها را نگه دارید');
+limit('.c-vibe', 3, 'حس‌های اصلی را نگه دارید');
+
+// Clear inline errors while typing / picking
+['brand', 'industry', 'scope', 'name', 'phone'].forEach(k => {
+    $('f-' + k)?.addEventListener('input', () => markErr(k, false));
+});
+document.querySelectorAll('input[name="r-budget"]').forEach(el =>
+    el.addEventListener('change', () => $('err-budget').classList.add('hidden')));
+
+// ─────────────────────────────────────────────────────
+// AUTOSAVE (localStorage)
+// ─────────────────────────────────────────────────────
+const LS_KEY = 'codiman-brief-v2';
+
+function save() {
+    const data = { text: {}, checks: [], radios: {}, selects: {}, step };
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+        if (el.id) data.text[el.id] = el.value;
+    });
+    document.querySelectorAll('input[type="checkbox"]:checked').forEach(el => {
+        data.checks.push(el.className.split(' ')[0] + '|' + el.value);
+    });
+    document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+        data.radios[el.name] = el.value;
+    });
+    document.querySelectorAll('select').forEach(el => {
+        if (el.id) data.selects[el.id] = el.value;
+    });
+    try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch (e) {}
+}
+
+function restore() {
+    let data;
+    try { data = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
+    if (!data) return;
+    Object.entries(data.text || {}).forEach(([id, v]) => { if ($(id)) $(id).value = v; });
+    (data.checks || []).forEach(key => {
+        const [cls, value] = [key.slice(0, key.indexOf('|')), key.slice(key.indexOf('|') + 1)];
+        document.querySelectorAll('input.' + cls).forEach(el => {
+            if (el.value === value) el.checked = true;
+        });
+    });
+    Object.entries(data.radios || {}).forEach(([name, v]) => {
+        document.querySelectorAll('input[name="' + name + '"]').forEach(el => {
+            if (el.value === v) el.checked = true;
+        });
+    });
+    Object.entries(data.selects || {}).forEach(([id, v]) => { if ($(id)) $(id).value = v; });
+    if (typeof data.step === 'number') step = Math.min(Math.max(data.step, 0), TOTAL - 1);
+}
+
+document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', save);
+    el.addEventListener('change', save);
 });
 
 // ─────────────────────────────────────────────────────
-// BUILD BRIEF (STEALTH PARSER)
+// BRIEF BUILDER
 // ─────────────────────────────────────────────────────
-function g(id) { return (document.getElementById(id)?.value || '').trim() || 'نامشخص'; }
-function sel(cls) {
-    return [...document.querySelectorAll(cls + ':checked')]
-           .map(e => e.parentNode.textContent.trim());
+function g(id) { return val(id) || 'نامشخص'; }
+function radio(name) {
+    return document.querySelector('input[name="' + name + '"]:checked')?.value || 'اعلام نشده';
 }
+function selVal(id) { return $(id)?.value || 'نامشخص'; }
+function picks(sel) { return checked(sel).map(el => el.value); }
 
 function buildBrief() {
     const brand = g('f-brand');
-    const goals = sel('.c-goal');
-    const vibes = sel('.c-vibe');
-    const budget = document.querySelector('input[name="r-budget"]:checked')?.value || 'اعلام نشده';
-    const logo = document.getElementById('f-logo')?.value || 'نامشخص';
-    const content = document.getElementById('f-content')?.value || 'نامشخص';
-    const decision = document.getElementById('f-decision')?.value || 'نامشخص';
+    const types = picks('.c-type');
+    const goals = picks('.c-goal');
+    const vibes = picks('.c-vibe');
+
+    // Group selected features by project type
+    const featGroups = {};
+    checked('.c-feat').forEach(el => {
+        (featGroups[el.dataset.g] = featGroups[el.dataset.g] || []).push(el.value);
+    });
 
     let t = '';
 
-    // Stealth system prompt disguised as a high-end compiler directive
-    t += `[SYSTEM_DIRECTIVE: ARCHITECTURE_PARSER_V4]\n`;
-    t += `Directive: Act as a Lead Full-Stack Architect & UX Strategist.\n`;
-    t += `Context: Discovery brief from an Iranian business client.\n`;
+    // System directive for AI-assisted analysis of the brief
+    t += `[SYSTEM_DIRECTIVE: SOLUTION_ARCHITECT_V5]\n`;
+    t += `Role: Senior Solution Architect & Product Strategist (Web, Windows Desktop, Mobile, Automation/AI).\n`;
+    t += `Context: Pre-sales discovery brief submitted by an Iranian business client.\n`;
     t += `Output_Language: Professional Persian.\n`;
-    t += `Task_List:\n`;
-    t += `  1. Identify latent business needs beyond stated requests\n`;
-    t += `  2. Propose optimal sitemap & structure\n`;
-    t += `  3. Recommend precise tech stack tailored to budget/timeline\n`;
-    t += `  4. Define UI/UX design system vibe\n`;
-    t += `  5. Prioritize top 5 MVP features\n`;
+    t += `Tasks:\n`;
+    t += `  1. Extract latent business needs & project risks beyond stated requests\n`;
+    t += `  2. Propose optimal solution architecture & phased scope (MVP vs full)\n`;
+    t += `  3. Recommend precise tech stack matched to budget tier & timeline\n`;
+    t += `  4. Draft sitemap / module map & top-5 MVP features\n`;
+    t += `  5. List unclear points to clarify with the client before quoting\n`;
     t += `[END_DIRECTIVE]\n\n`;
 
     t += `══════════════════════════════════════\n`;
-    t += `  CodiMan Specification — ${brand}\n`;
+    t += `  CodiMan Discovery Brief — ${brand}\n`;
     t += `══════════════════════════════════════\n\n`;
 
-    t += `▸ ۱. هویت کسب‌وکار\n`;
+    t += `▸ ۱. نوع و وضعیت پروژه\n`;
+    t += `  نوع پروژه:          ${types.length ? types.join(' + ') : 'تعیین نشده'}\n`;
+    t += `  وضعیت:              ${radio('r-status')}\n\n`;
+
+    t += `▸ ۲. هویت کسب‌وکار\n`;
     t += `  نام برند:           ${brand}\n`;
     t += `  حوزه فعالیت:        ${g('f-industry')}\n`;
     t += `  حضور آنلاین فعلی:   ${g('f-existing')}\n`;
     t += `  مدل درآمدی:         ${g('f-monetization')}\n`;
     t += `  تعریف کسب‌وکار:     ${g('f-description')}\n\n`;
 
-    t += `▸ ۲. اهداف وب‌سایت\n`;
-    (goals.length > 0 ? goals : ['تعیین نشده'])
-        .forEach(goal => t += `  • ${goal}\n`);
-    t += '\n';
+    t += `▸ ۳. شرح پروژه\n`;
+    t += `  ${g('f-scope')}\n\n`;
 
-    t += `▸ ۳. مخاطب و بازار\n`;
+    t += `▸ ۴. اهداف و امکانات\n`;
+    t += `  نتایج مورد انتظار:\n`;
+    (goals.length ? goals : ['تعیین نشده']).forEach(x => t += `    • ${x}\n`);
+    Object.entries(featGroups).forEach(([group, items]) => {
+        t += `  امکانات ${group}:\n`;
+        items.forEach(x => t += `    • ${x}\n`);
+    });
+    t += `  نکته حیاتی:        ${g('f-mustfeat')}\n\n`;
+
+    t += `▸ ۵. مخاطب و بازار\n`;
     t += `  پرسونای هدف:       ${g('f-target')}\n`;
-    t += `  رقبا:               ${g('f-competitors')}\n`;
+    t += `  رقبا / نمونه‌ها:    ${g('f-competitors')}\n`;
     t += `  مزیت رقابتی (USP):  ${g('f-usp')}\n\n`;
 
-    t += `▸ ۴. هویت بصری\n`;
-    t += `  حس مطلوب:          ${vibes.length > 0 ? vibes.join(' | ') : 'تعیین نشده'}\n`;
-    t += `  سایت‌های مرجع:      ${g('f-references')}\n\n`;
+    t += `▸ ۶. طراحی و دارایی‌ها\n`;
+    t += `  حس مطلوب:          ${vibes.length ? vibes.join(' | ') : 'تعیین نشده'}\n`;
+    t += `  نمونه‌های مرجع:     ${g('f-references')}\n`;
+    t += `  لوگو:               ${selVal('f-logo')}\n`;
+    t += `  محتوا:              ${selVal('f-content')}\n\n`;
 
-    t += `▸ ۵. بودجه و زمان‌بندی\n`;
-    t += `  بازه بودجه:        ${budget}\n`;
-    t += `  ددلاین:             ${g('f-timeline')}\n`;
-    t += `  تصمیم‌گیرنده:      ${decision}\n\n`;
+    t += `▸ ۷. سرمایه‌گذاری و زمان‌بندی\n`;
+    t += `  سطح سرمایه‌گذاری:  ${radio('r-budget')}\n`;
+    t += `  اولویت پروژه:      ${radio('r-priority')}\n`;
+    t += `  زمان‌بندی:          ${selVal('f-timeline')}\n`;
+    t += `  تصمیم‌گیرنده:      ${selVal('f-decision')}\n`;
+    t += `  پشتیبانی پس از تحویل: ${selVal('f-support')}\n\n`;
 
-    t += `▸ ۶. دارایی‌های موجود\n`;
-    t += `  لوگو:    ${logo}\n`;
-    t += `  محتوا:   ${content}\n\n`;
+    t += `▸ ۸. اطلاعات تماس\n`;
+    t += `  نام:                ${g('f-name')}\n`;
+    t += `  تماس:               ${g('f-phone')}\n`;
+    t += `  بهترین زمان تماس:  ${$('f-calltime')?.value || 'فرقی نمی‌کند'}\n\n`;
 
-    t += `▸ ۷. خطوط قرمز و نکات خاص\n`;
+    t += `▸ ۹. خطوط قرمز و نکات پایانی\n`;
     t += `  ${g('f-extra')}\n\n`;
 
     t += `══════════════════════════════════════\n`;
-    t += `CodiMan Architecture Engine v4.1\n`;
+    t += `CodiMan Discovery Engine v5.0\n`;
 
     const filename = 'Brief_' + brand.replace(/[\s/\\:*?"<>|]/g, '_');
     return { text: t, filename };
 }
 
 // ─────────────────────────────────────────────────────
-// ACTIONS (DECOUPLED TELEGRAM FIX)
+// FINAL ACTIONS
 // ─────────────────────────────────────────────────────
+function validateAll() {
+    for (const s of [0, 1, 2, 5, 6]) {
+        if (!validateStep(s)) {
+            step = s;
+            render();
+            return false;
+        }
+    }
+    return true;
+}
+
 function action(type) {
-    if (!validate()) {
-        toast('⚠️', 'فیلدهای ستاره‌دار را پر کنید');
-        document.querySelector('.err, #err-budget:not(.hidden)')
-                ?.closest('section')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!validateAll()) {
+        toast('⚠️', 'چند فیلد الزامی باقی مانده — لطفاً تکمیل کنید');
         return;
     }
 
@@ -454,24 +808,29 @@ function action(type) {
     if (type === 'copy') {
         navigator.clipboard.writeText(brief.text)
             .then(() => toast('✅', 'متن کپی شد! می‌توانید در تلگرام Paste کنید'))
-            .catch(() => toast('❌', 'خطا — لطفاً دانلود کنید'));
+            .catch(() => toast('❌', 'خطا — لطفاً فایل را دانلود کنید'));
 
     } else if (type === 'dl') {
         const a = document.createElement('a');
         a.href = URL.createObjectURL(
-                     new Blob([brief.text], { type: 'text/plain;charset=utf-8' }));
+            new Blob([brief.text], { type: 'text/plain;charset=utf-8' }));
         a.download = brief.filename + '.txt';
         a.click();
         toast('💾', 'فایل متنی دانلود شد');
 
     } else if (type === 'tg') {
-        // 1. Write to clipboard best-effort
         navigator.clipboard.writeText(brief.text).catch(() => {});
-        // 2. Open universal Telegram deep-link synchronously in the same stack frame
         window.open('https://t.me/AMIzadirad', '_blank');
-        toast('✈️', 'متن خاموش کپی شد! در چتِ مهندس Paste (چسباندن) را بزنید');
+        toast('✈️', 'متن کپی شد! در چت تلگرام Paste (چسباندن) را بزنید');
     }
 }
+
+// ─────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────
+restore();
+syncFeatureBlocks();
+render();
 </script>
 </body>
 </html>
