@@ -1,477 +1,1131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شناخت‌نامه پروژه - CodiMan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Vazirmatn', sans-serif; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12372f">
+  <title>بریف پروژه نرم‌افزاری | CodiMan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --ink: #14221f;
+      --muted: #677773;
+      --line: #dfe8e5;
+      --paper: #fff;
+      --wash: #f3f7f5;
+      --brand: #1f6f5c;
+      --brand-dark: #12372f;
+      --accent: #e9b949;
+      --danger: #c2413b;
+      --telegram: #229ed9;
+      --shadow: 0 16px 40px rgba(18, 55, 47, .08);
+      --radius: 22px;
+    }
 
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #52796F !important;
-            box-shadow: 0 0 0 3px rgba(82,121,111,0.12);
-        }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 90% 0, rgba(233, 185, 73, .12), transparent 25rem),
+        linear-gradient(180deg, #f8fbfa 0, var(--wash) 100%);
+      font-family: "Vazirmatn", "Inter", sans-serif;
+      min-height: 100vh;
+      padding-bottom: 112px;
+    }
+    body[dir="ltr"] { font-family: "Inter", "Vazirmatn", sans-serif; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
 
-        /* Selectable card (checkbox / radio) */
-        .pick-card {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 14px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-size: 12px;
-            color: #475569;
-            font-weight: 500;
-            user-select: none;
-        }
-        .pick-card:hover { border-color: #52796F; background: rgba(82,121,111,0.04); }
-        .pick-card:has(input:checked) {
-            border-color: #52796F;
-            background: rgba(82,121,111,0.09);
-            color: #1e293b;
-            font-weight: 700;
-        }
+    .topbar {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(223, 232, 229, .9);
+      background: rgba(255, 255, 255, .88);
+      backdrop-filter: blur(14px);
+    }
+    .topbar-inner {
+      width: min(760px, calc(100% - 32px));
+      margin: auto;
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { font-weight: 900; letter-spacing: -.04em; font-size: 18px; }
+    .brand em { color: var(--brand); font-style: normal; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .save-state { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .lang-switch {
+      display: flex;
+      padding: 3px;
+      border: 1px solid var(--line);
+      background: var(--wash);
+      border-radius: 12px;
+    }
+    .lang-switch button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .lang-switch button.active { background: var(--paper); color: var(--brand-dark); box-shadow: 0 2px 8px rgba(18,55,47,.1); }
 
-        .field-label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; }
+    .progress-track { height: 3px; background: #e7efec; }
+    .progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--brand), var(--accent)); transition: width .3s ease; }
 
-        .form-input {
-            width: 100%;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 11px 14px;
-            font-size: 13px;
-            background: #fafafa;
-            font-family: 'Vazirmatn', sans-serif;
-            color: #1e293b;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-input.err { border-color: #f87171 !important; }
+    main { width: min(760px, calc(100% - 32px)); margin: auto; }
+    .hero { padding: 54px 12px 28px; text-align: center; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border: 1px solid #d7e7e1;
+      border-radius: 999px;
+      color: var(--brand);
+      background: rgba(255,255,255,.7);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    h1 { margin: 18px 0 10px; font-size: clamp(28px, 6vw, 44px); line-height: 1.25; letter-spacing: -.04em; }
+    .hero p { max-width: 580px; margin: auto; color: var(--muted); font-size: 14px; line-height: 2; }
+    .hero-meta { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .meta-chip { padding: 7px 11px; border-radius: 999px; background: #e8f1ee; color: #3f6259; font-size: 10px; font-weight: 700; }
 
-        /* Toast */
-        #toast {
-            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        #toast.t-hide { opacity: 0; transform: translateX(-50%) translateY(-14px); pointer-events: none; }
-        #toast.t-show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: none; }
+    .section-card {
+      position: relative;
+      margin: 14px 0;
+      padding: 26px;
+      background: var(--paper);
+      border: 1px solid rgba(223, 232, 229, .95);
+      border-radius: var(--radius);
+      box-shadow: 0 5px 18px rgba(18, 55, 47, .035);
+    }
+    .section-heading { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 22px; }
+    .step {
+      display: grid;
+      place-items: center;
+      flex: 0 0 30px;
+      height: 30px;
+      border-radius: 10px;
+      color: white;
+      background: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 900;
+      box-shadow: 0 6px 14px rgba(18,55,47,.18);
+    }
+    h2 { font-size: 16px; margin: 1px 0 3px; }
+    .section-heading p { color: var(--muted); font-size: 11px; margin: 0; line-height: 1.7; }
+    .fields { display: grid; gap: 17px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field label, .group-label { display: block; margin-bottom: 7px; font-size: 11px; color: #40534e; font-weight: 800; }
+    .required { color: var(--danger); }
+    .optional { color: #92a19d; font-weight: 500; }
+    .input {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 13px;
+      color: var(--ink);
+      background: #fbfdfc;
+      border: 1.5px solid var(--line);
+      border-radius: 13px;
+      transition: .2s ease;
+    }
+    textarea.input { min-height: 82px; resize: vertical; line-height: 1.75; }
+    .input::placeholder { color: #a0aca9; }
+    .input:focus { outline: 0; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(31,111,92,.09); background: white; }
+    .input.invalid { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(194,65,59,.08); }
+    .error { display: none; margin-top: 5px; color: var(--danger); font-size: 10px; }
+    .error.show { display: block; }
+    .hint { margin: 6px 1px 0; color: #879692; font-size: 10px; line-height: 1.7; }
 
-        /* Progress bar */
-        #prog-fill { transition: width 0.4s ease; }
-    </style>
+    .choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .choice {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 13px;
+      background: #fff;
+      color: #4b5e59;
+      font-size: 11px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: .16s ease;
+      user-select: none;
+    }
+    .choice:hover { border-color: #8ab5a8; transform: translateY(-1px); }
+    .choice:has(input:checked) { color: var(--brand-dark); border-color: var(--brand); background: #edf6f3; box-shadow: inset 0 0 0 1px rgba(31,111,92,.08); }
+    .choice input { width: 16px; height: 16px; margin: 0; accent-color: var(--brand); flex: 0 0 auto; }
+    .choice small { display: block; color: var(--muted); font-size: 9px; font-weight: 500; margin-top: 2px; }
+
+    details.advanced { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 15px; }
+    details.advanced summary {
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    details.advanced summary::-webkit-details-marker { display: none; }
+    details.advanced summary::after { content: "+"; display: grid; place-items: center; width: 23px; height: 23px; border-radius: 8px; background: #edf6f3; font-size: 16px; }
+    details[open].advanced summary::after { content: "−"; }
+    .advanced-content { padding-top: 17px; }
+
+    .tradeoff {
+      overflow: hidden;
+      background: linear-gradient(145deg, var(--brand-dark), #1d5549);
+      color: white;
+      border: 0;
+    }
+    .tradeoff .step { color: var(--brand-dark); background: var(--accent); }
+    .tradeoff h2 { color: white; }
+    .tradeoff .section-heading p { color: #c7d8d3; }
+    .tradeoff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .trade-choice {
+      display: grid;
+      place-items: center;
+      min-height: 112px;
+      padding: 14px 8px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 17px;
+      background: rgba(255,255,255,.07);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .trade-choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .trade-choice:has(input:checked) { border-color: var(--accent); background: rgba(233,185,73,.16); transform: translateY(-2px); }
+    .trade-icon { font-size: 26px; margin-bottom: 6px; }
+    .trade-choice b { font-size: 12px; }
+    .trade-choice small { color: #c9dad5; font-size: 9px; margin-top: 3px; }
+    .trade-result {
+      min-height: 46px;
+      margin-top: 12px;
+      padding: 11px 14px;
+      border-radius: 13px;
+      background: rgba(0,0,0,.15);
+      color: #dce9e5;
+      font-size: 10px;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .trade-result.ready { background: rgba(233,185,73,.14); color: #fff4cf; }
+
+    .moscow { display: grid; gap: 10px; }
+    .priority-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: stretch; }
+    .priority-tag { display: flex; flex-direction: column; justify-content: center; padding: 12px; border-radius: 13px; font-size: 11px; font-weight: 900; }
+    .priority-tag small { font-size: 8px; font-weight: 600; opacity: .72; margin-top: 3px; }
+    .must { background: #fce9e7; color: #9d342f; }
+    .should { background: #fff4d7; color: #7d5a08; }
+    .could { background: #e6f3ef; color: #246454; }
+    .wont { background: #edf0f2; color: #59666b; }
+    .priority-row textarea { min-height: 66px; }
+
+    .notice { padding: 13px 15px; border-radius: 13px; background: #f0f6f4; color: #58706a; font-size: 10px; line-height: 1.8; }
+    .privacy { display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+
+    .actionbar {
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 30;
+      padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 -12px 35px rgba(18,55,47,.08);
+    }
+    .actionbar-inner { width: min(760px, 100%); margin: auto; display: grid; grid-template-columns: 1.35fr 1fr auto; gap: 9px; }
+    .action {
+      min-height: 48px;
+      border: 0;
+      border-radius: 14px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 11px;
+      font-weight: 850;
+      transition: .16s ease;
+    }
+    .action:hover { transform: translateY(-1px); filter: brightness(.97); }
+    .action:disabled { opacity: .55; cursor: wait; transform: none; }
+    .action-primary { background: var(--telegram); }
+    .action-dark { background: var(--brand-dark); }
+    .action-ghost { color: #53635f; background: #edf2f0; }
+
+    .toast {
+      position: fixed;
+      inset-block-start: 78px;
+      inset-inline-start: 50%;
+      z-index: 50;
+      max-width: calc(100% - 32px);
+      padding: 11px 17px;
+      color: white;
+      background: #172622;
+      border-radius: 13px;
+      box-shadow: var(--shadow);
+      font-size: 11px;
+      font-weight: 750;
+      opacity: 0;
+      transform: translate(-50%, -12px);
+      pointer-events: none;
+      transition: .25s ease;
+      white-space: nowrap;
+    }
+    [dir="rtl"] .toast { transform: translate(50%, -12px); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    [dir="rtl"] .toast.show { transform: translate(50%, 0); }
+
+    #pdf-report {
+      position: fixed;
+      inset-inline-start: -10000px;
+      top: 0;
+      width: 794px;
+      background: white;
+      color: #182622;
+      font-family: "Vazirmatn", "Inter", sans-serif;
+    }
+    .pdf-page { padding: 46px 50px; }
+    .pdf-head { border-bottom: 3px solid #1f6f5c; padding-bottom: 20px; margin-bottom: 25px; }
+    .pdf-headline { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+    .pdf-brand { color: #1f6f5c; font-weight: 900; font-size: 14px; }
+    .pdf-title { margin: 9px 0 0; font-size: 25px; line-height: 1.4; }
+    .pdf-date { color: #71807c; font-size: 10px; white-space: nowrap; }
+    .pdf-section { break-inside: avoid; margin: 0 0 19px; }
+    .pdf-section h3 { margin: 0 0 8px; padding-bottom: 5px; color: #1f6f5c; border-bottom: 1px solid #dce7e3; font-size: 13px; }
+    .pdf-row { display: grid; grid-template-columns: 155px 1fr; gap: 12px; padding: 5px 0; font-size: 10px; line-height: 1.65; }
+    .pdf-label { color: #75837f; font-weight: 700; }
+    .pdf-value { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .pdf-empty { color: #a5b0ad; }
+    .pdf-footer { margin-top: 28px; padding-top: 12px; border-top: 1px solid #e1e9e6; color: #8b9894; font-size: 9px; text-align: center; }
+
+    @media (max-width: 620px) {
+      body { padding-bottom: 168px; }
+      .topbar-inner, main { width: min(100% - 22px, 760px); }
+      .save-state { display: none; }
+      .hero { padding-top: 38px; }
+      .section-card { padding: 21px 17px; border-radius: 18px; }
+      .two-col { grid-template-columns: 1fr; }
+      .choice-grid { grid-template-columns: 1fr; }
+      .tradeoff-grid { gap: 7px; }
+      .trade-choice { min-height: 104px; padding: 10px 4px; }
+      .trade-choice small { max-width: 84px; }
+      .priority-row { grid-template-columns: 82px 1fr; }
+      .actionbar-inner { grid-template-columns: 1fr 1fr; }
+      .action-primary { grid-column: 1 / -1; }
+      .action-ghost { display: none; }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen pb-28">
-
-<div id="toast" class="fixed top-4 left-1/2 t-hide z-50">
-    <div class="bg-slate-900 text-white text-[11px] font-bold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 whitespace-nowrap">
-        <span id="t-icon"></span><span id="t-msg"></span>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">Codi<em>Man</em></div>
+      <div class="top-actions">
+        <span id="save-state" class="save-state" data-fa="پاسخ‌ها روی همین دستگاه ذخیره می‌شوند" data-en="Answers are saved on this device"></span>
+        <div class="lang-switch" aria-label="Language">
+          <button id="lang-fa" type="button" class="active" onclick="setLanguage('fa')">فا</button>
+          <button id="lang-en" type="button" onclick="setLanguage('en')">EN</button>
+        </div>
+      </div>
     </div>
-</div>
+    <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+  </div>
 
-<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-    <div class="max-w-xl mx-auto px-4 py-3 flex justify-between items-center">
-        <span class="font-mono text-sm font-black text-slate-900">Codi<span class="text-[#52796F]">Man</span></span>
-        <div class="flex items-center gap-2.5">
-            <span class="text-[10px] text-slate-400 font-semibold hidden sm:inline">تکمیل فرم</span>
-            <div class="w-28 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div id="prog-fill" class="h-full bg-[#52796F] rounded-full" style="width:0%"></div>
-            </div>
-            <span id="prog-pct" class="text-[11px] font-black text-[#52796F] min-w-[28px] text-left">۰٪</span>
+  <main>
+    <header class="hero">
+      <span class="eyebrow" data-fa="شروع یک همکاری شفاف" data-en="Start with shared clarity"></span>
+      <h1 data-fa="بریف هوشمند پروژه نرم‌افزاری" data-en="Smart software project brief"></h1>
+      <p data-fa="لازم نیست فنی باشید. فقط مسئله و اولویت‌ها را بگویید؛ جزئیات اختیاری‌اند و بعداً با هم کاملشان می‌کنیم." data-en="You do not need to be technical. Tell us the problem and priorities; details are optional and we can refine them together."></p>
+      <div class="hero-meta">
+        <span class="meta-chip" data-fa="حدود ۵ تا ۷ دقیقه" data-en="About 5–7 minutes"></span>
+        <span class="meta-chip" data-fa="فقط ۲ پاسخ الزامی" data-en="Only 2 required answers"></span>
+        <span class="meta-chip" data-fa="ذخیره خودکار" data-en="Auto-saved"></span>
+        <span class="meta-chip" data-fa="خروجی PDF" data-en="PDF export"></span>
+      </div>
+    </header>
+
+    <form id="brief-form" novalidate>
+      <section class="section-card" id="section-basics">
+        <div class="section-heading">
+          <span class="step">01</span>
+          <div>
+            <h2 data-fa="پروژه در یک نگاه" data-en="Project at a glance"></h2>
+            <p data-fa="دو پاسخ کوتاه برای شروع کافی است." data-en="Two short answers are enough to get started."></p>
+          </div>
         </div>
-    </div>
-</header>
-
-<main class="max-w-xl mx-auto px-4 pt-8 space-y-4">
-
-    <div class="text-center mb-8">
-        <span class="text-[10px] font-black tracking-widest bg-[#52796F]/10 text-[#52796F] px-4 py-1.5 rounded-full uppercase inline-block">Project Specification — CodiMan</span>
-        <h1 class="text-2xl font-black text-slate-900 mt-3">شناخت‌نامه و معماری پروژه</h1>
-        <p class="text-xs text-slate-400 mt-1.5">تکمیل این فرم کمتر از ۷ دقیقه زمان می‌برد</p>
-    </div>
-
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۱</span>
-            هویت کسب‌وکار
-        </h2>
-        <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="field-label">نام برند <span class="text-red-400">*</span></label>
-                    <input id="f-brand" class="form-input" type="text" placeholder="کلینیک آریا، پت‌شاپ ملو...">
-                    <p id="err-brand" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
-                </div>
-                <div>
-                    <label class="field-label">حوزه فعالیت <span class="text-red-400">*</span></label>
-                    <input id="f-industry" class="form-input" type="text" placeholder="پزشکی، فروشگاه...">
-                    <p id="err-industry" class="text-red-400 text-[10px] mt-1 hidden">این فیلد الزامی است</p>
-                </div>
+        <div class="fields">
+          <div class="two-col">
+            <div class="field">
+              <label for="project-name"><span data-fa="نام پروژه یا برند" data-en="Project or brand name"></span> <span class="required">*</span></label>
+              <input class="input" id="project-name" name="projectName" required autocomplete="organization" data-ph-fa="مثلاً پلتفرم سلامت آریا" data-ph-en="e.g. Aria Health Platform">
+              <span class="error" data-fa="لطفاً یک نام وارد کنید." data-en="Please enter a name."></span>
             </div>
-            <div>
-                <label class="field-label">سایت یا اینستاگرام فعلی (اگر دارید)</label>
-                <input id="f-existing" class="form-input" type="text" placeholder="www.example.com یا yourpage@">
+            <div class="field">
+              <label for="organization-type"><span data-fa="شما در چه مرحله‌ای هستید؟" data-en="What stage are you at?"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <select class="input" id="organization-type" name="organizationType">
+                <option value="" data-fa="انتخاب کنید" data-en="Select"></option>
+                <option value="idea" data-fa="ایده / استارتاپ در شروع" data-en="Idea / early startup"></option>
+                <option value="startup" data-fa="استارتاپ فعال" data-en="Operating startup"></option>
+                <option value="small-business" data-fa="کسب‌وکار کوچک یا شخصی" data-en="Small or solo business"></option>
+                <option value="company" data-fa="شرکت یا سازمان" data-en="Company or enterprise"></option>
+                <option value="team" data-fa="تیم، انجمن یا مجموعه غیرانتفاعی" data-en="Team, community, or nonprofit"></option>
+                <option value="individual" data-fa="پروژه شخصی" data-en="Personal project"></option>
+              </select>
             </div>
-            <div>
-                <label class="field-label">مدل درآمدی — چطور پول درمی‌آورید؟</label>
-                <input id="f-monetization" class="form-input" type="text" placeholder="فروش حضوری، کمیسیون، ویزیت پزشکی، اشتراک...">
-            </div>
-            <div>
-                <label class="field-label">«ما به ___ کمک می‌کنیم تا ___»</label>
-                <textarea id="f-description" class="form-input resize-none" rows="2"
-                    placeholder="ما به صاحبان خودرو کمک می‌کنیم تا قطعه اصل را سریع پیدا کنند"></textarea>
-            </div>
+          </div>
+          <div class="field">
+            <label for="problem"><span data-fa="چه مسئله‌ای باید حل شود؟" data-en="What problem should this solve?"></span> <span class="required">*</span></label>
+            <textarea class="input" id="problem" name="problem" required data-ph-fa="الان چه چیزی سخت، کند یا پرهزینه است و بعد از ساخت پروژه چه چیزی باید بهتر شود؟" data-ph-en="What is difficult, slow, or expensive today—and what should improve after launch?"></textarea>
+            <span class="error" data-fa="لطفاً مسئله اصلی را کوتاه توضیح دهید." data-en="Please briefly describe the main problem."></span>
+          </div>
+          <div class="field">
+            <label for="existing"><span data-fa="لینک محصول، سایت یا نمونه فعلی" data-en="Current product, website, or reference link"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="existing" name="existing" inputmode="url" data-ph-fa="https://… یا هنوز چیزی نداریم" data-ph-en="https://… or nothing exists yet">
+          </div>
         </div>
-    </section>
+      </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-1">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۲</span>
-            هدف اصلی سایت
-        </h2>
-        <p class="text-[11px] text-slate-400 mb-4 mr-8">سایت قرار است کدام مشکل را حل کند؟ (حداکثر ۲ مورد)</p>
-        <div class="space-y-2">
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>دریافت تماس و لید بیشتر از مشتریان</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>نوبت‌دهی / رزرو آنلاین خودکار</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>فروش مستقیم آنلاین با درگاه پرداخت</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>نمایش لوکس خدمات / نمونه‌کارها (ویترین)</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>حضور رسمی، اعتبار برند و پرستیژ</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-goal accent-[#52796F] shrink-0"><span>ارتباط و پشتیبانی آنلاین مشتریان فعلی</span></label>
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">02</span>
+          <div>
+            <h2 data-fa="نوع محصول و نتیجه مطلوب" data-en="Product type and desired outcome"></h2>
+            <p data-fa="حداکثر دو نوع و سه نتیجه انتخاب کنید." data-en="Choose up to two types and three outcomes."></p>
+          </div>
         </div>
-    </section>
+        <span class="group-label" data-fa="قرار است چه چیزی ساخته یا بهتر شود؟" data-en="What should be built or improved?"></span>
+        <div class="choice-grid" id="product-types">
+          <label class="choice"><input type="checkbox" name="productType" value="website"><span data-fa="وب‌سایت شرکتی / محتوایی" data-en="Corporate / content website"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="webapp"><span data-fa="وب‌اپلیکیشن یا پنل" data-en="Web app or dashboard"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="mobile"><span data-fa="اپلیکیشن موبایل" data-en="Mobile application"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="commerce"><span data-fa="فروشگاه یا مارکت‌پلیس" data-en="E-commerce or marketplace"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="automation"><span data-fa="اتوماسیون، ربات یا ابزار داخلی" data-en="Automation, bot, or internal tool"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="api"><span data-fa="بک‌اند، API یا یکپارچه‌سازی" data-en="Backend, API, or integration"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="ai"><span data-fa="هوش مصنوعی یا پروژه داده" data-en="AI or data project"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="maintenance"><span data-fa="بازطراحی، رفع مشکل یا توسعه محصول فعلی" data-en="Redesign, fixes, or extending a product"></span></label>
+          <label class="choice"><input type="checkbox" name="productType" value="unsure"><span data-fa="مطمئن نیستم؛ پیشنهاد بدهید" data-en="Not sure—please recommend"></span></label>
+        </div>
+        <div style="height:17px"></div>
+        <span class="group-label" data-fa="موفقیت این پروژه چه شکلی است؟" data-en="What would success look like?"></span>
+        <div class="choice-grid" id="outcomes">
+          <label class="choice"><input type="checkbox" name="outcome" value="sales"><span data-fa="فروش یا درآمد بیشتر" data-en="More sales or revenue"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="leads"><span data-fa="لید، تماس یا ثبت‌نام بیشتر" data-en="More leads, calls, or signups"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="efficiency"><span data-fa="کاهش کار دستی و هزینه" data-en="Less manual work and cost"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="experience"><span data-fa="تجربه بهتر برای کاربر" data-en="Better user experience"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="launch"><span data-fa="اعتبارسنجی و عرضه سریع MVP" data-en="Validate and launch an MVP"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="scale"><span data-fa="مقیاس‌پذیری و پایداری" data-en="Scale and reliability"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="brand"><span data-fa="اعتبار و تصویر حرفه‌ای برند" data-en="Brand trust and professional image"></span></label>
+          <label class="choice"><input type="checkbox" name="outcome" value="compliance"><span data-fa="امنیت یا انطباق قانونی" data-en="Security or compliance"></span></label>
+        </div>
+        <details class="advanced">
+          <summary data-fa="اگر معیار عددی دارید، اضافه کنید" data-en="Add a measurable target, if you have one"></summary>
+          <div class="advanced-content field">
+            <label for="success-metric"><span data-fa="معیار موفقیت" data-en="Success metric"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="success-metric" name="successMetric" data-ph-fa="مثلاً ۳۰٪ کاهش زمان پاسخ‌گویی یا ۱۰۰ سفارش در ماه" data-ph-en="e.g. 30% faster response time or 100 monthly orders">
+          </div>
+        </details>
+      </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۳</span>
-            مخاطب، رقبا و مزیت
-        </h2>
-        <div class="space-y-4">
-            <div>
-                <label class="field-label">مشتری ایده‌آل شما کیست؟</label>
-                <input id="f-target" class="form-input" type="text"
-                    placeholder="بانوان ۲۵–۴۵ ساله تهرانی با درآمد متوسط به بالا">
-            </div>
-            <div>
-                <label class="field-label">رقبای اصلی (لینک یا نام)</label>
-                <input id="f-competitors" class="form-input" type="text" placeholder="حداکثر ۲–۳ رقیب مستقیم">
-            </div>
-            <div>
-                <label class="field-label">مزیت رقابتی — چرا مشتری باید شما را انتخاب کند؟</label>
-                <input id="f-usp" class="form-input" type="text"
-                    placeholder="قیمت بهتر، تحویل سریع‌تر، تجربه بیشتر...">
-            </div>
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">03</span>
+          <div>
+            <h2 data-fa="کاربران و مسیر اصلی" data-en="Users and core journey"></h2>
+            <p data-fa="به جای اصطلاح فنی، یک تجربه واقعی را تعریف کنید." data-en="Describe a real experience instead of technical details."></p>
+          </div>
         </div>
-    </section>
+        <div class="fields">
+          <div class="field">
+            <label for="audience"><span data-fa="کاربر اصلی چه کسی است؟" data-en="Who is the primary user?"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="audience" name="audience" data-ph-fa="مثلاً مدیر فروش یک شرکت کوچک، بیمار، دانشجو…" data-ph-en="e.g. a small-company sales manager, patient, student…">
+          </div>
+          <div class="field">
+            <label for="core-journey"><span data-fa="مهم‌ترین کاری که کاربر باید انجام دهد" data-en="The most important thing a user should do"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <textarea class="input" id="core-journey" name="coreJourney" data-ph-fa="مثلاً وارد شود، سرویس مناسب را پیدا کند، زمان رزرو کند و رسید بگیرد." data-ph-en="e.g. sign in, find the right service, book a time, and receive confirmation."></textarea>
+          </div>
+          <div class="field">
+            <label for="roles"><span data-fa="نقش‌های دیگر و سطح دسترسی" data-en="Other roles and permissions"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="roles" name="roles" data-ph-fa="مدیر، اپراتور، فروشنده، مشتری؛ هرکدام چه چیزی می‌بینند؟" data-ph-en="Admin, operator, seller, customer—what can each one access?">
+          </div>
+        </div>
+      </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-1">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۴</span>
-            حس بصری مطلوب
-        </h2>
-        <p class="text-[11px] text-slate-400 mb-4 mr-8">کاربر بعد از ورود باید چه حسی داشته باشد؟ (حداکثر ۳ مورد)</p>
-        <div class="grid grid-cols-2 gap-2 mb-4">
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>مینیمال و خلوت</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>لوکس و VIP</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>حرفه‌ای و شرکتی</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>مدرن و تکنولوژیک</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>آرامش‌بخش و امن</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>صمیمی و گرم</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>پرانرژی و خلاق</span></label>
-            <label class="pick-card"><input type="checkbox" class="c-vibe accent-[#52796F]"><span>عامه‌پسند / تجاری</span></label>
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">04</span>
+          <div>
+            <h2 data-fa="قابلیت‌ها را اولویت‌بندی کنید" data-en="Prioritize the capabilities"></h2>
+            <p data-fa="لیست ساده هم کافی است؛ لازم نیست همه ردیف‌ها را پر کنید." data-en="A simple list is enough; you do not need to fill every row."></p>
+          </div>
         </div>
-        <div>
-            <label class="field-label">سایت‌های مرجع (لینک سایت‌هایی که طراحیشان را دوست دارید)</label>
-            <textarea id="f-references" class="form-input resize-none" rows="2" placeholder="https://..."></textarea>
+        <div class="moscow">
+          <div class="priority-row">
+            <div class="priority-tag must"><span data-fa="باید باشد" data-en="Must have"></span><small data-fa="بدون آن پروژه شکست می‌خورد" data-en="Launch fails without it"></small></div>
+            <textarea class="input" id="must-have" name="mustHave" data-ph-fa="مثلاً ثبت‌نام، رزرو، پرداخت…" data-ph-en="e.g. signup, booking, payment…"></textarea>
+          </div>
+          <div class="priority-row">
+            <div class="priority-tag should"><span data-fa="بهتر است باشد" data-en="Should have"></span><small data-fa="مهم، اما قابل تعویق" data-en="Important, but deferrable"></small></div>
+            <textarea class="input" id="should-have" name="shouldHave" data-ph-fa="مثلاً گزارش مدیریتی…" data-ph-en="e.g. management reports…"></textarea>
+          </div>
+          <div class="priority-row">
+            <div class="priority-tag could"><span data-fa="اگر شد" data-en="Could have"></span><small data-fa="ارزش افزوده" data-en="Useful extra"></small></div>
+            <textarea class="input" id="could-have" name="couldHave" data-ph-fa="مثلاً پیشنهاد هوشمند…" data-ph-en="e.g. smart recommendations…"></textarea>
+          </div>
+          <div class="priority-row">
+            <div class="priority-tag wont"><span data-fa="فعلاً نه" data-en="Not this time"></span><small data-fa="خارج از نسخه اول" data-en="Out of first release"></small></div>
+            <textarea class="input" id="wont-have" name="wontHave" data-ph-fa="مثلاً اپ iOS در فاز بعد…" data-ph-en="e.g. iOS app in a later phase…"></textarea>
+          </div>
         </div>
-    </section>
+        <p class="hint" data-fa="نکته: اگر همه‌چیز «باید باشد» است، هنوز اولویت واقعی مشخص نشده." data-en="Tip: if everything is a must-have, the real priorities are not clear yet."></p>
+      </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۵</span>
-            بودجه و زمان‌بندی
-        </h2>
-        <div class="space-y-4">
-            <div>
-                <label class="field-label">بازه بودجه تقریبی پروژه <span class="text-red-400">*</span></label>
-                <div class="grid grid-cols-2 gap-2">
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="زیر ۵ میلیون تومان"><span>زیر ۵ میلیون</span></label>
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="۵ تا ۱۵ میلیون تومان"><span>۵ تا ۱۵ میلیون</span></label>
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="۱۵ تا ۳۰ میلیون تومان"><span>۱۵ تا ۳۰ میلیون</span></label>
-                    <label class="pick-card"><input type="radio" name="r-budget" class="accent-[#52796F]" value="بالای ۳۰ میلیون تومان"><span>بالای ۳۰ میلیون</span></label>
-                </div>
-                <p id="err-budget" class="text-red-400 text-[10px] mt-1 hidden">لطفاً یک بازه انتخاب کنید</p>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="field-label">ددلاین مطلوب</label>
-                    <input id="f-timeline" class="form-input" type="text" placeholder="یک ماه، قبل از عید...">
-                </div>
-                <div>
-                    <label class="field-label">تصمیم‌گیرنده نهایی</label>
-                    <select id="f-decision" class="form-input cursor-pointer">
-                        <option value="">انتخاب کنید</option>
-                        <option>خودم هستم</option>
-                        <option>مدیرعامل یا شریک</option>
-                        <option>تیم مدیریت (چند نفر)</option>
-                        <option>کارفرمای دیگر</option>
-                    </select>
-                </div>
-            </div>
+      <section class="section-card tradeoff">
+        <div class="section-heading">
+          <span class="step">05</span>
+          <div>
+            <h2 data-fa="بازی انتخاب دو از سه" data-en="The pick-two trade-off"></h2>
+            <p data-fa="دو اولویت اصلی را انتخاب کنید؛ تغییر هر ضلع روی دو ضلع دیگر اثر دارد." data-en="Pick your top two; changing one constraint affects the others."></p>
+          </div>
         </div>
-    </section>
+        <div class="tradeoff-grid">
+          <label class="trade-choice">
+            <input type="checkbox" name="tradeoff" value="quality">
+            <span class="trade-icon">✦</span>
+            <b data-fa="کیفیت و عمق" data-en="Quality & depth"></b>
+            <small data-fa="جزئیات، تست و دوام" data-en="Polish, testing, longevity"></small>
+          </label>
+          <label class="trade-choice">
+            <input type="checkbox" name="tradeoff" value="speed">
+            <span class="trade-icon">↗</span>
+            <b data-fa="سرعت عرضه" data-en="Speed to launch"></b>
+            <small data-fa="رسیدن سریع‌تر به بازار" data-en="Get to market sooner"></small>
+          </label>
+          <label class="trade-choice">
+            <input type="checkbox" name="tradeoff" value="cost">
+            <span class="trade-icon">◒</span>
+            <b data-fa="بودجه اقتصادی" data-en="Lean budget"></b>
+            <small data-fa="کنترل هزینه نسخه اول" data-en="Control first-release cost"></small>
+          </label>
+        </div>
+        <div id="trade-result" class="trade-result" data-fa="دو گزینه را انتخاب کنید تا اثر انتخابتان را ببینید." data-en="Choose two options to see the trade-off."></div>
+      </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-5">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۶</span>
-            وضعیت دارایی‌ها
-        </h2>
-        <div class="grid grid-cols-2 gap-3">
-            <div>
-                <label class="field-label">لوگو و هویت بصری</label>
-                <select id="f-logo" class="form-input cursor-pointer text-xs">
-                    <option>لوگوی وکتور آماده دارم</option>
-                    <option>لوگو دارم ولی قدیمی است</option>
-                    <option>لوگو ندارم</option>
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">06</span>
+          <div>
+            <h2 data-fa="زمینه فنی، داده و ریسک" data-en="Technical context, data, and risk"></h2>
+            <p data-fa="اگر نمی‌دانید، خالی بگذارید؛ پیشنهاد فنی وظیفه ماست." data-en="Leave this blank if unsure; technical recommendations are our job."></p>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="integrations"><span data-fa="سرویس‌ها یا سیستم‌های متصل" data-en="Services or systems to integrate"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="integrations" name="integrations" data-ph-fa="درگاه پرداخت، حسابداری، CRM، پیامک، نقشه، API…" data-ph-en="Payment, accounting, CRM, SMS, maps, APIs…">
+          </div>
+          <div class="choice-grid">
+            <label class="choice"><input type="checkbox" name="risk" value="login"><span data-fa="ورود و حساب کاربری" data-en="Login and user accounts"></span></label>
+            <label class="choice"><input type="checkbox" name="risk" value="payment"><span data-fa="پرداخت یا تراکنش مالی" data-en="Payments or financial transactions"></span></label>
+            <label class="choice"><input type="checkbox" name="risk" value="sensitive"><span data-fa="داده شخصی یا حساس" data-en="Personal or sensitive data"></span></label>
+            <label class="choice"><input type="checkbox" name="risk" value="migration"><span data-fa="انتقال داده از سیستم قبلی" data-en="Data migration from another system"></span></label>
+            <label class="choice"><input type="checkbox" name="risk" value="compliance"><span data-fa="الزام قانونی یا صنفی" data-en="Legal or industry compliance"></span></label>
+            <label class="choice"><input type="checkbox" name="risk" value="high-traffic"><span data-fa="ترافیک یا مقیاس بالا" data-en="High traffic or scale"></span></label>
+          </div>
+        </div>
+        <details class="advanced">
+          <summary data-fa="محدودیت‌ها و جزئیات فنی بیشتر" data-en="More constraints and technical details"></summary>
+          <div class="advanced-content fields">
+            <div class="field">
+              <label for="constraints"><span data-fa="فناوری، هاست یا محدودیت اجباری" data-en="Required technology, hosting, or constraints"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <textarea class="input" id="constraints" name="constraints" data-ph-fa="فقط مواردی که واقعاً اجباری‌اند؛ مانند اتصال به سامانه موجود یا میزبانی داخل ایران." data-ph-en="Only truly mandatory items, such as an existing platform or regional hosting."></textarea>
+            </div>
+            <div class="field">
+              <label for="non-functional"><span data-fa="نیازهای ویژه" data-en="Special requirements"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="non-functional" name="nonFunctional" data-ph-fa="سرعت، آفلاین، چندزبانه، دسترس‌پذیری، SEO…" data-ph-en="Performance, offline use, multilingual, accessibility, SEO…">
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">07</span>
+          <div>
+            <h2 data-fa="ظاهر، محتوا و دارایی‌ها" data-en="Design, content, and assets"></h2>
+            <p data-fa="حال‌وهوای مطلوب را انتخاب کنید؛ حداکثر سه مورد." data-en="Choose the desired feel—up to three."></p>
+          </div>
+        </div>
+        <div class="choice-grid" id="vibes">
+          <label class="choice"><input type="checkbox" name="vibe" value="minimal"><span data-fa="مینیمال و روشن" data-en="Minimal and clear"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="professional"><span data-fa="حرفه‌ای و قابل‌اعتماد" data-en="Professional and trustworthy"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="premium"><span data-fa="لوکس و ممتاز" data-en="Premium and refined"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="friendly"><span data-fa="صمیمی و انسانی" data-en="Friendly and human"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="bold"><span data-fa="جسور و پرانرژی" data-en="Bold and energetic"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="tech"><span data-fa="مدرن و تکنولوژیک" data-en="Modern and technical"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="accessible"><span data-fa="ساده و در دسترس برای همه" data-en="Simple and accessible"></span></label>
+          <label class="choice"><input type="checkbox" name="vibe" value="recommend"><span data-fa="پیشنهاد شما را می‌خواهم" data-en="I want your recommendation"></span></label>
+        </div>
+        <details class="advanced">
+          <summary data-fa="منابع طراحی و وضعیت محتوا" data-en="Design references and content readiness"></summary>
+          <div class="advanced-content fields">
+            <div class="field">
+              <label for="references"><span data-fa="نمونه‌هایی که دوست دارید یا دوست ندارید" data-en="Examples you like or dislike"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <textarea class="input" id="references" name="references" data-ph-fa="لینک و دلیل کوتاه: چه چیزی خوب یا بد است؟" data-ph-en="Links and a short reason: what works or does not?"></textarea>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label for="brand-assets" data-fa="لوگو و هویت بصری" data-en="Logo and brand identity"></label>
+                <select class="input" id="brand-assets" name="brandAssets">
+                  <option value="" data-fa="مشخص نیست" data-en="Not sure"></option>
+                  <option value="ready" data-fa="آماده و قابل استفاده است" data-en="Ready to use"></option>
+                  <option value="partial" data-fa="نیاز به بهبود دارد" data-en="Needs improvement"></option>
+                  <option value="none" data-fa="نداریم؛ باید طراحی شود" data-en="None; needs design"></option>
                 </select>
-            </div>
-            <div>
-                <label class="field-label">عکس‌ها و محتوای متنی</label>
-                <select id="f-content" class="form-input cursor-pointer text-xs">
-                    <option>محتوا کاملاً آماده است</option>
-                    <option>بخشی آماده، بخشی نیاز به کمک دارد</option>
-                    <option>محتوایی ندارم</option>
+              </div>
+              <div class="field">
+                <label for="content-status" data-fa="متن، عکس و محتوا" data-en="Copy, images, and content"></label>
+                <select class="input" id="content-status" name="contentStatus">
+                  <option value="" data-fa="مشخص نیست" data-en="Not sure"></option>
+                  <option value="ready" data-fa="کاملاً آماده است" data-en="Fully ready"></option>
+                  <option value="partial" data-fa="بخشی آماده است" data-en="Partly ready"></option>
+                  <option value="none" data-fa="برای تولید محتوا کمک می‌خواهیم" data-en="We need content support"></option>
                 </select>
+              </div>
             </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">08</span>
+          <div>
+            <h2 data-fa="بودجه، زمان و همکاری" data-en="Budget, timing, and collaboration"></h2>
+            <p data-fa="بودجه اجباری نیست؛ می‌توانید برآورد را به ما بسپارید." data-en="Budget is optional; you can ask us to estimate it."></p>
+          </div>
         </div>
-    </section>
+        <div class="fields">
+          <div>
+            <span class="group-label" data-fa="ترجیح بودجه" data-en="Budget preference"></span>
+            <div class="choice-grid">
+              <label class="choice"><input type="radio" name="budgetMode" value="estimate"><span data-fa="شما بر اساس راهکار برآورد کنید" data-en="Estimate based on your solution"></span></label>
+              <label class="choice"><input type="radio" name="budgetMode" value="range"><span data-fa="بازه بودجه دارم" data-en="I have a budget range"></span></label>
+              <label class="choice"><input type="radio" name="budgetMode" value="phased"><span data-fa="نسخه مرحله‌ای و اقتصادی پیشنهاد دهید" data-en="Suggest a lean, phased release"></span></label>
+              <label class="choice"><input type="radio" name="budgetMode" value="unknown"><span data-fa="هنوز تصمیم نگرفته‌ام" data-en="Not decided yet"></span></label>
+            </div>
+          </div>
+          <div id="budget-range-wrap" class="field" hidden>
+            <label for="budget-range"><span data-fa="بازه و واحد بودجه" data-en="Budget range and currency"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="budget-range" name="budgetRange" data-ph-fa="مثلاً ۸۰ تا ۱۲۰ میلیون تومان" data-ph-en="e.g. USD 3,000–5,000">
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label for="timeline-mode"><span data-fa="وضعیت زمان‌بندی" data-en="Timeline preference"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <select class="input" id="timeline-mode" name="timelineMode">
+                <option value="" data-fa="مشخص نیست" data-en="Not sure"></option>
+                <option value="fixed" data-fa="ددلاین قطعی داریم" data-en="We have a fixed deadline"></option>
+                <option value="target" data-fa="تاریخ هدف، اما منعطف است" data-en="Target date, but flexible"></option>
+                <option value="soon" data-fa="هرچه زودتر، با پیشنهاد شما" data-en="As soon as practical"></option>
+                <option value="quality" data-fa="کیفیت مهم‌تر از تاریخ است" data-en="Quality matters more than date"></option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="target-date"><span data-fa="تاریخ یا بازه مطلوب" data-en="Target date or timeframe"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="target-date" name="targetDate" data-ph-fa="مثلاً قبل از نمایشگاه مهرماه" data-ph-en="e.g. before the October event">
+            </div>
+          </div>
+          <div class="field">
+            <label for="decision"><span data-fa="چه کسی تصمیم نهایی و تأییدها را انجام می‌دهد؟" data-en="Who makes the final decision and approvals?"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <input class="input" id="decision" name="decision" data-ph-fa="خودم، هم‌بنیان‌گذاران، مدیرعامل، کمیته…" data-ph-en="Me, co-founders, CEO, committee…">
+          </div>
+        </div>
+      </section>
 
-    <section class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-        <h2 class="flex items-center gap-2 text-sm font-black text-slate-800 mb-4">
-            <span class="w-6 h-6 rounded-full bg-[#52796F] text-white text-[10px] font-black flex items-center justify-center shrink-0">۷</span>
-            خطوط قرمز و نکات خاص
-        </h2>
-        <textarea id="f-extra" class="form-input resize-none" rows="3"
-            placeholder="رنگ خاصی که نباید باشد، فیچر اولویت‌دار، محدودیت فنی، حساسیت‌های خاص..."></textarea>
-    </section>
+      <section class="section-card">
+        <div class="section-heading">
+          <span class="step">09</span>
+          <div>
+            <h2 data-fa="آخرین نکته و راه ارتباطی" data-en="Final notes and contact"></h2>
+            <p data-fa="هر چیزی که نگفتیم یا نباید فراموش شود." data-en="Anything we missed or should not forget."></p>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="notes"><span data-fa="خط قرمزها، نگرانی‌ها یا توضیح تکمیلی" data-en="Red lines, concerns, or extra context"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <textarea class="input" id="notes" name="notes" data-ph-fa="محدودیت، تجربه بد قبلی، چیزی که حتماً نباید انجام شود…" data-ph-en="Constraints, a bad past experience, or something we must avoid…"></textarea>
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label for="contact-name"><span data-fa="نام شما" data-en="Your name"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="contact-name" name="contactName" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="contact-way"><span data-fa="ایمیل یا آیدی تلگرام" data-en="Email or Telegram ID"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="contact-way" name="contactWay" autocomplete="email" data-ph-fa="email@example.com یا @username" data-ph-en="email@example.com or @username">
+            </div>
+          </div>
+          <div class="notice" data-fa="اطلاعات فرم به هیچ سروری ارسال نمی‌شود. پاسخ‌ها فقط در مرورگر شما ذخیره می‌شوند و هنگام دانلود یا اشتراک‌گذاری، PDF روی همان دستگاه ساخته می‌شود." data-en="This form sends nothing to a server. Answers stay in your browser, and the PDF is generated locally when you download or share it."></div>
+          <label class="privacy">
+            <input id="privacy-ack" type="checkbox" name="privacyAck">
+            <span data-fa="قبل از ارسال، پاسخ‌ها را مرور کرده‌ام و اطلاعات محرمانه مثل رمز عبور، کلید API یا اطلاعات بانکی وارد نکرده‌ام." data-en="I reviewed my answers and did not include secrets such as passwords, API keys, or banking details."></span>
+          </label>
+        </div>
+      </section>
+    </form>
+  </main>
 
-</main>
-
-<footer class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-xl z-40">
-    <div class="max-w-xl mx-auto px-4 py-3 flex gap-2">
-        <button onclick="action('tg')"
-            class="flex-1 bg-[#229ED9] hover:bg-[#1a85b8] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
-            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-            </svg>
-            ارسال در تلگرام
-        </button>
-        <button onclick="action('copy')"
-            class="flex-1 bg-[#52796F] hover:bg-[#3b5952] text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
-            📋 کپی متن پاسخ‌ها
-        </button>
-        <button onclick="action('dl')"
-            class="flex-1 bg-slate-900 hover:bg-black text-white text-[11px] font-black py-3.5 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
-            💾 دانلود فایل TXT
-        </button>
+  <div class="actionbar">
+    <div class="actionbar-inner">
+      <button class="action action-primary" type="button" data-action="share" onclick="handleAction('share')" data-fa="ارسال PDF با تلگرام / اشتراک‌گذاری" data-en="Share PDF via Telegram / apps"></button>
+      <button class="action action-dark" type="button" data-action="download" onclick="handleAction('download')" data-fa="دانلود PDF" data-en="Download PDF"></button>
+      <button class="action action-ghost" type="button" onclick="clearDraft()" data-fa="پاک کردن" data-en="Clear"></button>
     </div>
-</footer>
+  </div>
 
-<script>
-// ─────────────────────────────────────────────────────
-// PROGRESS
-// ─────────────────────────────────────────────────────
-const TEXT_FIELDS = [
-    'f-brand','f-industry','f-existing','f-monetization','f-description',
-    'f-target','f-competitors','f-usp','f-references',
-    'f-timeline','f-extra'
-];
-const MAX_SCORE = TEXT_FIELDS.length + 3; 
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <article id="pdf-report" aria-hidden="true"></article>
 
-function calcProgress() {
-    let score = 0;
-    TEXT_FIELDS.forEach(id => {
-        if ((document.getElementById(id)?.value || '').trim()) score++;
-    });
-    if (document.querySelectorAll('.c-goal:checked, .c-vibe:checked').length > 0) score++;
-    if (document.querySelector('input[name="r-budget"]:checked')) score++;
-    if ((document.getElementById('f-decision')?.value || '')) score++;
+  <script>
+    const TELEGRAM_USERNAME = "AMIzadirad";
+    const STORAGE_KEY = "codiman-software-brief-v2";
+    const form = document.getElementById("brief-form");
+    let lang = localStorage.getItem(`${STORAGE_KEY}:lang`) || "fa";
+    let toastTimer;
 
-    const pct = Math.min(Math.round((score / MAX_SCORE) * 100), 100);
-    document.getElementById('prog-fill').style.width = pct + '%';
-    document.getElementById('prog-pct').textContent = pct + '٪';
-}
+    const labels = {
+      organizationType: {
+        idea: ["ایده / استارتاپ در شروع", "Idea / early startup"],
+        startup: ["استارتاپ فعال", "Operating startup"],
+        "small-business": ["کسب‌وکار کوچک یا شخصی", "Small or solo business"],
+        company: ["شرکت یا سازمان", "Company or enterprise"],
+        team: ["تیم، انجمن یا مجموعه غیرانتفاعی", "Team, community, or nonprofit"],
+        individual: ["پروژه شخصی", "Personal project"]
+      },
+      productType: {
+        website: ["وب‌سایت شرکتی / محتوایی", "Corporate / content website"],
+        webapp: ["وب‌اپلیکیشن یا پنل", "Web app or dashboard"],
+        mobile: ["اپلیکیشن موبایل", "Mobile application"],
+        commerce: ["فروشگاه یا مارکت‌پلیس", "E-commerce or marketplace"],
+        automation: ["اتوماسیون، ربات یا ابزار داخلی", "Automation, bot, or internal tool"],
+        api: ["بک‌اند، API یا یکپارچه‌سازی", "Backend, API, or integration"],
+        ai: ["هوش مصنوعی یا پروژه داده", "AI or data project"],
+        maintenance: ["بازطراحی، رفع مشکل یا توسعه محصول فعلی", "Redesign, fixes, or extending a product"],
+        unsure: ["مطمئن نیستم؛ پیشنهاد بدهید", "Not sure—please recommend"]
+      },
+      outcome: {
+        sales: ["فروش یا درآمد بیشتر", "More sales or revenue"],
+        leads: ["لید، تماس یا ثبت‌نام بیشتر", "More leads, calls, or signups"],
+        efficiency: ["کاهش کار دستی و هزینه", "Less manual work and cost"],
+        experience: ["تجربه بهتر برای کاربر", "Better user experience"],
+        launch: ["اعتبارسنجی و عرضه سریع MVP", "Validate and launch an MVP"],
+        scale: ["مقیاس‌پذیری و پایداری", "Scale and reliability"],
+        brand: ["اعتبار و تصویر حرفه‌ای برند", "Brand trust and professional image"],
+        compliance: ["امنیت یا انطباق قانونی", "Security or compliance"]
+      },
+      tradeoff: {
+        quality: ["کیفیت و عمق", "Quality & depth"],
+        speed: ["سرعت عرضه", "Speed to launch"],
+        cost: ["بودجه اقتصادی", "Lean budget"]
+      },
+      risk: {
+        login: ["ورود و حساب کاربری", "Login and user accounts"],
+        payment: ["پرداخت یا تراکنش مالی", "Payments or financial transactions"],
+        sensitive: ["داده شخصی یا حساس", "Personal or sensitive data"],
+        migration: ["انتقال داده از سیستم قبلی", "Data migration from another system"],
+        compliance: ["الزام قانونی یا صنفی", "Legal or industry compliance"],
+        "high-traffic": ["ترافیک یا مقیاس بالا", "High traffic or scale"]
+      },
+      vibe: {
+        minimal: ["مینیمال و روشن", "Minimal and clear"],
+        professional: ["حرفه‌ای و قابل‌اعتماد", "Professional and trustworthy"],
+        premium: ["لوکس و ممتاز", "Premium and refined"],
+        friendly: ["صمیمی و انسانی", "Friendly and human"],
+        bold: ["جسور و پرانرژی", "Bold and energetic"],
+        tech: ["مدرن و تکنولوژیک", "Modern and technical"],
+        accessible: ["ساده و در دسترس برای همه", "Simple and accessible"],
+        recommend: ["پیشنهاد شما را می‌خواهم", "I want your recommendation"]
+      },
+      budgetMode: {
+        estimate: ["برآورد بر اساس راهکار پیشنهادی", "Estimate based on proposed solution"],
+        range: ["بازه بودجه مشخص", "Defined budget range"],
+        phased: ["نسخه مرحله‌ای و اقتصادی", "Lean, phased release"],
+        unknown: ["هنوز تصمیم‌گیری نشده", "Not decided yet"]
+      },
+      timelineMode: {
+        fixed: ["ددلاین قطعی", "Fixed deadline"],
+        target: ["تاریخ هدف منعطف", "Flexible target date"],
+        soon: ["هرچه زودتر با پیشنهاد مجری", "As soon as practical"],
+        quality: ["کیفیت مهم‌تر از تاریخ", "Quality over deadline"]
+      },
+      brandAssets: {
+        ready: ["آماده و قابل استفاده", "Ready to use"],
+        partial: ["نیازمند بهبود", "Needs improvement"],
+        none: ["باید طراحی شود", "Needs design"]
+      },
+      contentStatus: {
+        ready: ["کاملاً آماده", "Fully ready"],
+        partial: ["بخشی آماده", "Partly ready"],
+        none: ["نیازمند کمک برای تولید", "Needs content support"]
+      }
+    };
 
-document.querySelectorAll('input, textarea, select').forEach(el => {
-    el.addEventListener('input', calcProgress);
-    el.addEventListener('change', calcProgress);
-});
+    const reportCopy = {
+      fa: {
+        title: "بریف پروژه نرم‌افزاری",
+        empty: "اعلام نشده",
+        yes: "بله",
+        sections: [
+          ["پروژه در یک نگاه", [["نام پروژه / برند","projectName"],["مرحله کسب‌وکار","organizationType"],["مسئله اصلی","problem"],["محصول یا لینک فعلی","existing"]]],
+          ["هدف و محصول", [["نوع محصول","productType"],["نتیجه مطلوب","outcome"],["معیار موفقیت","successMetric"]]],
+          ["کاربران و تجربه", [["کاربر اصلی","audience"],["مسیر اصلی کاربر","coreJourney"],["نقش‌ها و دسترسی‌ها","roles"]]],
+          ["اولویت قابلیت‌ها", [["باید باشد","mustHave"],["بهتر است باشد","shouldHave"],["اگر شد","couldHave"],["فعلاً خارج از نسخه","wontHave"]]],
+          ["موازنه پروژه", [["دو اولویت منتخب","tradeoff"],["اثر انتخاب","tradeoffResult"]]],
+          ["فناوری، داده و ریسک", [["یکپارچه‌سازی‌ها","integrations"],["موارد حساس","risk"],["محدودیت‌های فنی","constraints"],["نیازهای ویژه","nonFunctional"]]],
+          ["طراحی و محتوا", [["حال‌وهوای بصری","vibe"],["نمونه‌های مرجع","references"],["وضعیت برند","brandAssets"],["وضعیت محتوا","contentStatus"]]],
+          ["بودجه و زمان", [["ترجیح بودجه","budgetMode"],["بازه بودجه","budgetRange"],["زمان‌بندی","timelineMode"],["تاریخ هدف","targetDate"],["تصمیم‌گیرنده","decision"]]],
+          ["اطلاعات تکمیلی", [["نکات و خطوط قرمز","notes"],["نام تماس","contactName"],["راه ارتباطی","contactWay"]]]
+        ],
+        footer: "این سند به‌صورت محلی با فرم CodiMan ساخته شده است."
+      },
+      en: {
+        title: "Software Project Brief",
+        empty: "Not provided",
+        yes: "Yes",
+        sections: [
+          ["Project at a glance", [["Project / brand name","projectName"],["Organization stage","organizationType"],["Core problem","problem"],["Existing product or link","existing"]]],
+          ["Product and outcomes", [["Product type","productType"],["Desired outcomes","outcome"],["Success metric","successMetric"]]],
+          ["Users and experience", [["Primary user","audience"],["Core user journey","coreJourney"],["Roles and permissions","roles"]]],
+          ["Feature priorities", [["Must have","mustHave"],["Should have","shouldHave"],["Could have","couldHave"],["Not this release","wontHave"]]],
+          ["Project trade-off", [["Selected priorities","tradeoff"],["Expected effect","tradeoffResult"]]],
+          ["Technology, data, and risk", [["Integrations","integrations"],["Risk flags","risk"],["Technical constraints","constraints"],["Special requirements","nonFunctional"]]],
+          ["Design and content", [["Visual direction","vibe"],["References","references"],["Brand assets","brandAssets"],["Content status","contentStatus"]]],
+          ["Budget and timing", [["Budget preference","budgetMode"],["Budget range","budgetRange"],["Timeline preference","timelineMode"],["Target date","targetDate"],["Decision maker","decision"]]],
+          ["Additional information", [["Notes and red lines","notes"],["Contact name","contactName"],["Contact method","contactWay"]]]
+        ],
+        footer: "This document was generated locally using the CodiMan brief."
+      }
+    };
 
-// ─────────────────────────────────────────────────────
-// TOAST
-// ─────────────────────────────────────────────────────
-let toastTimer;
-function toast(icon, msg) {
-    clearTimeout(toastTimer);
-    const el = document.getElementById('toast');
-    document.getElementById('t-icon').textContent = icon;
-    document.getElementById('t-msg').textContent = msg;
-    el.classList.remove('t-hide');
-    el.classList.add('t-show');
-    toastTimer = setTimeout(() => {
-        el.classList.remove('t-show');
-        el.classList.add('t-hide');
-    }, 3500);
-}
-
-// ─────────────────────────────────────────────────────
-// VALIDATION
-// ─────────────────────────────────────────────────────
-function validate() {
-    let ok = true;
-
-    ['brand', 'industry'].forEach(key => {
-        const el = document.getElementById('f-' + key);
-        const err = document.getElementById('err-' + key);
-        const empty = !(el?.value || '').trim();
-        el?.classList.toggle('err', empty);
-        err?.classList.toggle('hidden', !empty);
-        if (empty) ok = false;
-    });
-
-    const budgetPicked = !!document.querySelector('input[name="r-budget"]:checked');
-    document.getElementById('err-budget')?.classList.toggle('hidden', budgetPicked);
-    if (!budgetPicked) ok = false;
-
-    return ok;
-}
-
-['brand','industry'].forEach(key => {
-    document.getElementById('f-' + key)?.addEventListener('input', function(){
-        this.classList.remove('err');
-        document.getElementById('err-' + key)?.classList.add('hidden');
-    });
-});
-document.querySelectorAll('input[name="r-budget"]').forEach(el => {
-    el.addEventListener('change', () =>
-        document.getElementById('err-budget')?.classList.add('hidden')
-    );
-});
-
-// ─────────────────────────────────────────────────────
-// BUILD BRIEF (STEALTH PARSER)
-// ─────────────────────────────────────────────────────
-function g(id) { return (document.getElementById(id)?.value || '').trim() || 'نامشخص'; }
-function sel(cls) {
-    return [...document.querySelectorAll(cls + ':checked')]
-           .map(e => e.parentNode.textContent.trim());
-}
-
-function buildBrief() {
-    const brand = g('f-brand');
-    const goals = sel('.c-goal');
-    const vibes = sel('.c-vibe');
-    const budget = document.querySelector('input[name="r-budget"]:checked')?.value || 'اعلام نشده';
-    const logo = document.getElementById('f-logo')?.value || 'نامشخص';
-    const content = document.getElementById('f-content')?.value || 'نامشخص';
-    const decision = document.getElementById('f-decision')?.value || 'نامشخص';
-
-    let t = '';
-
-    // Stealth system prompt disguised as a high-end compiler directive
-    t += `[SYSTEM_DIRECTIVE: ARCHITECTURE_PARSER_V4]\n`;
-    t += `Directive: Act as a Lead Full-Stack Architect & UX Strategist.\n`;
-    t += `Context: Discovery brief from an Iranian business client.\n`;
-    t += `Output_Language: Professional Persian.\n`;
-    t += `Task_List:\n`;
-    t += `  1. Identify latent business needs beyond stated requests\n`;
-    t += `  2. Propose optimal sitemap & structure\n`;
-    t += `  3. Recommend precise tech stack tailored to budget/timeline\n`;
-    t += `  4. Define UI/UX design system vibe\n`;
-    t += `  5. Prioritize top 5 MVP features\n`;
-    t += `[END_DIRECTIVE]\n\n`;
-
-    t += `══════════════════════════════════════\n`;
-    t += `  CodiMan Specification — ${brand}\n`;
-    t += `══════════════════════════════════════\n\n`;
-
-    t += `▸ ۱. هویت کسب‌وکار\n`;
-    t += `  نام برند:           ${brand}\n`;
-    t += `  حوزه فعالیت:        ${g('f-industry')}\n`;
-    t += `  حضور آنلاین فعلی:   ${g('f-existing')}\n`;
-    t += `  مدل درآمدی:         ${g('f-monetization')}\n`;
-    t += `  تعریف کسب‌وکار:     ${g('f-description')}\n\n`;
-
-    t += `▸ ۲. اهداف وب‌سایت\n`;
-    (goals.length > 0 ? goals : ['تعیین نشده'])
-        .forEach(goal => t += `  • ${goal}\n`);
-    t += '\n';
-
-    t += `▸ ۳. مخاطب و بازار\n`;
-    t += `  پرسونای هدف:       ${g('f-target')}\n`;
-    t += `  رقبا:               ${g('f-competitors')}\n`;
-    t += `  مزیت رقابتی (USP):  ${g('f-usp')}\n\n`;
-
-    t += `▸ ۴. هویت بصری\n`;
-    t += `  حس مطلوب:          ${vibes.length > 0 ? vibes.join(' | ') : 'تعیین نشده'}\n`;
-    t += `  سایت‌های مرجع:      ${g('f-references')}\n\n`;
-
-    t += `▸ ۵. بودجه و زمان‌بندی\n`;
-    t += `  بازه بودجه:        ${budget}\n`;
-    t += `  ددلاین:             ${g('f-timeline')}\n`;
-    t += `  تصمیم‌گیرنده:      ${decision}\n\n`;
-
-    t += `▸ ۶. دارایی‌های موجود\n`;
-    t += `  لوگو:    ${logo}\n`;
-    t += `  محتوا:   ${content}\n\n`;
-
-    t += `▸ ۷. خطوط قرمز و نکات خاص\n`;
-    t += `  ${g('f-extra')}\n\n`;
-
-    t += `══════════════════════════════════════\n`;
-    t += `CodiMan Architecture Engine v4.1\n`;
-
-    const filename = 'Brief_' + brand.replace(/[\s/\\:*?"<>|]/g, '_');
-    return { text: t, filename };
-}
-
-// ─────────────────────────────────────────────────────
-// ACTIONS (DECOUPLED TELEGRAM FIX)
-// ─────────────────────────────────────────────────────
-function action(type) {
-    if (!validate()) {
-        toast('⚠️', 'فیلدهای ستاره‌دار را پر کنید');
-        document.querySelector('.err, #err-budget:not(.hidden)')
-                ?.closest('section')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
+    function setLanguage(next) {
+      lang = next;
+      localStorage.setItem(`${STORAGE_KEY}:lang`, lang);
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
+      document.body.dir = document.documentElement.dir;
+      document.title = lang === "fa" ? "بریف پروژه نرم‌افزاری | CodiMan" : "Software Project Brief | CodiMan";
+      document.querySelectorAll("[data-fa][data-en]").forEach(el => {
+        el.textContent = el.dataset[lang];
+      });
+      document.querySelectorAll("[data-ph-fa][data-ph-en]").forEach(el => {
+        el.placeholder = el.dataset[`ph${lang === "fa" ? "Fa" : "En"}`];
+      });
+      document.getElementById("lang-fa").classList.toggle("active", lang === "fa");
+      document.getElementById("lang-en").classList.toggle("active", lang === "en");
+      updateTradeoff();
+      updateProgress();
     }
 
-    const brief = buildBrief();
-
-    if (type === 'copy') {
-        navigator.clipboard.writeText(brief.text)
-            .then(() => toast('✅', 'متن کپی شد! می‌توانید در تلگرام Paste کنید'))
-            .catch(() => toast('❌', 'خطا — لطفاً دانلود کنید'));
-
-    } else if (type === 'dl') {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(
-                     new Blob([brief.text], { type: 'text/plain;charset=utf-8' }));
-        a.download = brief.filename + '.txt';
-        a.click();
-        toast('💾', 'فایل متنی دانلود شد');
-
-    } else if (type === 'tg') {
-        // 1. Write to clipboard best-effort
-        navigator.clipboard.writeText(brief.text).catch(() => {});
-        // 2. Open universal Telegram deep-link synchronously in the same stack frame
-        window.open('https://t.me/AMIzadirad', '_blank');
-        toast('✈️', 'متن خاموش کپی شد! در چتِ مهندس Paste (چسباندن) را بزنید');
+    function enforceLimit(name, max) {
+      form.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+        input.addEventListener("change", () => {
+          const checked = [...form.querySelectorAll(`input[name="${name}"]:checked`)];
+          if (checked.length > max) {
+            input.checked = false;
+            showToast(lang === "fa" ? `حداکثر ${toFa(max)} انتخاب مجاز است.` : `Choose up to ${max}.`);
+          }
+        });
+      });
     }
-}
-</script>
+
+    function toFa(value) {
+      return String(value).replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+    }
+
+    function updateTradeoff() {
+      const selected = checkedValues("tradeoff");
+      const result = document.getElementById("trade-result");
+      const fa = {
+        "quality,speed": "کیفیت + سرعت: برای حفظ عمق و تست در زمان کمتر، بودجه یا منابع بیشتری لازم است.",
+        "cost,quality": "کیفیت + بودجه اقتصادی: دامنه نسخه اول کوچک‌تر و زمان‌بندی منعطف‌تر می‌شود.",
+        "cost,speed": "سرعت + بودجه اقتصادی: یک MVP محدود تحویل می‌شود؛ کیفیت پایه حفظ می‌شود اما عمق و جزئیات کمتر است."
+      };
+      const en = {
+        "quality,speed": "Quality + speed: keeping depth and testing in less time requires more budget or resources.",
+        "cost,quality": "Quality + lean budget: the first-release scope gets smaller and the timeline more flexible.",
+        "cost,speed": "Speed + lean budget: expect a tightly scoped MVP; baseline quality stays, but depth and polish are reduced."
+      };
+      const key = [...selected].sort().join(",");
+      result.textContent = selected.length === 2
+        ? (lang === "fa" ? fa[key] : en[key])
+        : (lang === "fa" ? "دو گزینه را انتخاب کنید تا اثر انتخابتان را ببینید." : "Choose two options to see the trade-off.");
+      result.classList.toggle("ready", selected.length === 2);
+    }
+
+    function formState() {
+      const state = {};
+      new FormData(form).forEach((value, key) => {
+        if (state[key]) state[key] = [].concat(state[key], value);
+        else state[key] = value;
+      });
+      return state;
+    }
+
+    function saveDraft() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formState()));
+      const el = document.getElementById("save-state");
+      el.textContent = lang === "fa" ? "ذخیره شد ✓" : "Saved ✓";
+      clearTimeout(saveDraft.timer);
+      saveDraft.timer = setTimeout(() => {
+        el.textContent = el.dataset[lang];
+      }, 1500);
+    }
+
+    function restoreDraft() {
+      try {
+        const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        Object.entries(state).forEach(([name, stored]) => {
+          const controls = form.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+          const values = [].concat(stored);
+          controls.forEach(control => {
+            if (control.type === "checkbox" || control.type === "radio") control.checked = values.includes(control.value);
+            else control.value = stored;
+          });
+        });
+      } catch (_) {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    function clearDraft() {
+      const ok = confirm(lang === "fa" ? "همه پاسخ‌های ذخیره‌شده پاک شوند؟" : "Clear all saved answers?");
+      if (!ok) return;
+      form.reset();
+      localStorage.removeItem(STORAGE_KEY);
+      document.getElementById("budget-range-wrap").hidden = true;
+      updateTradeoff();
+      updateProgress();
+      showToast(lang === "fa" ? "پاسخ‌ها پاک شدند." : "Answers cleared.");
+    }
+
+    function checkedValues(name) {
+      return [...form.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+    }
+
+    function updateProgress() {
+      const checkpoints = [
+        value("projectName"), value("problem"), checkedValues("productType").length,
+        checkedValues("outcome").length, value("audience"), value("coreJourney"),
+        value("mustHave"), checkedValues("tradeoff").length === 2, value("integrations"),
+        checkedValues("vibe").length, getRadio("budgetMode"), value("contactWay")
+      ];
+      const pct = Math.round(checkpoints.filter(Boolean).length / checkpoints.length * 100);
+      document.getElementById("progress-fill").style.width = `${pct}%`;
+    }
+
+    function value(name) {
+      return (form.elements[name]?.value || "").trim();
+    }
+
+    function getRadio(name) {
+      return form.querySelector(`input[name="${name}"]:checked`)?.value || "";
+    }
+
+    function validateForm() {
+      const required = ["projectName", "problem"];
+      let firstInvalid = null;
+      required.forEach(name => {
+        const input = form.elements[name];
+        const invalid = !input.value.trim();
+        input.classList.toggle("invalid", invalid);
+        input.parentElement.querySelector(".error")?.classList.toggle("show", invalid);
+        if (invalid && !firstInvalid) firstInvalid = input;
+      });
+      if (firstInvalid) {
+        firstInvalid.closest(".section-card").scrollIntoView({ behavior: "smooth", block: "center" });
+        firstInvalid.focus({ preventScroll: true });
+        showToast(lang === "fa" ? "لطفاً دو پاسخ الزامی را کامل کنید." : "Please complete the two required answers.");
+        return false;
+      }
+      return true;
+    }
+
+    function localized(group, code) {
+      if (!code) return "";
+      const pair = labels[group]?.[code];
+      return pair ? pair[lang === "fa" ? 0 : 1] : code;
+    }
+
+    function displayValue(key) {
+      if (["productType", "outcome", "tradeoff", "risk", "vibe"].includes(key)) {
+        return checkedValues(key).map(code => localized(key, code)).join(lang === "fa" ? "، " : ", ");
+      }
+      if (["budgetMode"].includes(key)) return localized(key, getRadio(key));
+      if (["organizationType", "timelineMode", "brandAssets", "contentStatus"].includes(key)) {
+        return localized(key, value(key));
+      }
+      if (key === "tradeoffResult") {
+        return checkedValues("tradeoff").length === 2 ? document.getElementById("trade-result").textContent : "";
+      }
+      return value(key);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function buildReport() {
+      const copy = reportCopy[lang];
+      const project = value("projectName");
+      const date = new Intl.DateTimeFormat(lang === "fa" ? "fa-IR" : "en-GB", { dateStyle: "long" }).format(new Date());
+      const sections = copy.sections.map(([title, rows]) => {
+        const body = rows.map(([label, key]) => {
+          const answer = displayValue(key);
+          return `<div class="pdf-row"><div class="pdf-label">${escapeHtml(label)}</div><div class="pdf-value${answer ? "" : " pdf-empty"}">${escapeHtml(answer || copy.empty)}</div></div>`;
+        }).join("");
+        return `<section class="pdf-section"><h3>${escapeHtml(title)}</h3>${body}</section>`;
+      }).join("");
+      document.getElementById("pdf-report").innerHTML = `
+        <div class="pdf-page" dir="${lang === "fa" ? "rtl" : "ltr"}">
+          <header class="pdf-head">
+            <div class="pdf-headline">
+              <div><div class="pdf-brand">CodiMan</div><h1 class="pdf-title">${escapeHtml(copy.title)} — ${escapeHtml(project)}</h1></div>
+              <div class="pdf-date">${escapeHtml(date)}</div>
+            </div>
+          </header>
+          ${sections}
+          <footer class="pdf-footer">${escapeHtml(copy.footer)}</footer>
+        </div>`;
+      return document.getElementById("pdf-report");
+    }
+
+    function safeFilename() {
+      const base = value("projectName") || "project";
+      const safe = base.replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "_").slice(0, 60);
+      return `CodiMan_Brief_${safe}.pdf`;
+    }
+
+    function pdfOptions() {
+      return {
+        margin: 0,
+        filename: safeFilename(),
+        image: { type: "jpeg", quality: .96 },
+        html2canvas: { scale: 1.55, useCORS: true, letterRendering: true, backgroundColor: "#ffffff" },
+        jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".pdf-section"] }
+      };
+    }
+
+    async function createPdfBlob() {
+      if (typeof html2pdf === "undefined") throw new Error("PDF library unavailable");
+      await document.fonts.ready;
+      const report = buildReport();
+      return html2pdf().set(pdfOptions()).from(report).toPdf().outputPdf("blob");
+    }
+
+    function setBusy(busy) {
+      document.querySelectorAll("[data-action]").forEach(button => {
+        button.disabled = busy;
+        if (busy) button.dataset.oldText = button.textContent;
+        button.textContent = busy
+          ? (lang === "fa" ? "در حال ساخت PDF…" : "Creating PDF…")
+          : (button.dataset.oldText || button.textContent);
+      });
+    }
+
+    async function handleAction(type) {
+      if (!validateForm()) return;
+      setBusy(true);
+      try {
+        if (type === "download") {
+          const report = buildReport();
+          await document.fonts.ready;
+          await html2pdf().set(pdfOptions()).from(report).save();
+          showToast(lang === "fa" ? "PDF دانلود شد." : "PDF downloaded.");
+        } else {
+          const blob = await createPdfBlob();
+          const file = new File([blob], safeFilename(), { type: "application/pdf" });
+          if (navigator.canShare?.({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: reportCopy[lang].title,
+              text: lang === "fa" ? "بریف پروژه برای CodiMan" : "Project brief for CodiMan"
+            });
+          } else {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = safeFilename();
+            link.click();
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+            window.open(`https://t.me/${TELEGRAM_USERNAME}`, "_blank", "noopener");
+            showToast(lang === "fa"
+              ? "PDF دانلود شد؛ آن را در گفت‌وگوی بازشده پیوست کنید."
+              : "PDF downloaded; attach it in the opened chat.");
+          }
+        }
+      } catch (error) {
+        if (error?.name !== "AbortError") {
+          console.error(error);
+          showToast(lang === "fa" ? "ساخت PDF ممکن نشد؛ اتصال اینترنت را بررسی کنید." : "Could not create the PDF. Check your connection.");
+        }
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add("show");
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3600);
+    }
+
+    form.addEventListener("input", event => {
+      if (event.target.matches("[required]")) {
+        event.target.classList.remove("invalid");
+        event.target.parentElement.querySelector(".error")?.classList.remove("show");
+      }
+      saveDraft();
+      updateProgress();
+    });
+    form.addEventListener("change", event => {
+      if (event.target.name === "tradeoff") updateTradeoff();
+      if (event.target.name === "budgetMode") {
+        document.getElementById("budget-range-wrap").hidden = event.target.value !== "range";
+      }
+      saveDraft();
+      updateProgress();
+    });
+
+    enforceLimit("productType", 2);
+    enforceLimit("outcome", 3);
+    enforceLimit("vibe", 3);
+    enforceLimit("tradeoff", 2);
+    restoreDraft();
+    document.getElementById("budget-range-wrap").hidden = getRadio("budgetMode") !== "range";
+    setLanguage(lang);
+  </script>
 </body>
 </html>
