@@ -296,12 +296,14 @@
 
     #pdf-report {
       position: fixed;
-      inset-inline-start: -10000px;
+      left: 0;
       top: 0;
+      z-index: -1000;
       width: 794px;
       background: white;
       color: #182622;
       font-family: "Vazirmatn", "Inter", sans-serif;
+      pointer-events: none;
     }
     .pdf-page { padding: 46px 50px; }
     .pdf-head { border-bottom: 3px solid #1f6f5c; padding-bottom: 20px; margin-bottom: 25px; }
