@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --ink: #14221f;
@@ -293,28 +293,6 @@
     [dir="rtl"] .toast { transform: translate(50%, -12px); }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
     [dir="rtl"] .toast.show { transform: translate(50%, 0); }
-
-    #pdf-report {
-      width: 794px;
-      background: white;
-      color: #182622;
-      font-family: "Vazirmatn", "Inter", sans-serif;
-      pointer-events: none;
-    }
-    #pdf-report:empty { display: none; }
-    .pdf-page { padding: 46px 50px; }
-    .pdf-head { border-bottom: 3px solid #1f6f5c; padding-bottom: 20px; margin-bottom: 25px; }
-    .pdf-headline { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
-    .pdf-brand { color: #1f6f5c; font-weight: 900; font-size: 14px; }
-    .pdf-title { margin: 9px 0 0; font-size: 25px; line-height: 1.4; }
-    .pdf-date { color: #71807c; font-size: 10px; white-space: nowrap; }
-    .pdf-section { break-inside: avoid; margin: 0 0 19px; }
-    .pdf-section h3 { margin: 0 0 8px; padding-bottom: 5px; color: #1f6f5c; border-bottom: 1px solid #dce7e3; font-size: 13px; }
-    .pdf-row { display: grid; grid-template-columns: 155px 1fr; gap: 12px; padding: 5px 0; font-size: 10px; line-height: 1.65; }
-    .pdf-label { color: #75837f; font-weight: 700; }
-    .pdf-value { white-space: pre-wrap; overflow-wrap: anywhere; }
-    .pdf-empty { color: #a5b0ad; }
-    .pdf-footer { margin-top: 28px; padding-top: 12px; border-top: 1px solid #e1e9e6; color: #8b9894; font-size: 9px; text-align: center; }
 
     @media (max-width: 620px) {
       body { padding-bottom: 168px; }
@@ -701,8 +679,6 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <article id="pdf-report" aria-hidden="true"></article>
-
   <script>
     const TELEGRAM_USERNAME = "AMIzadirad";
     const STORAGE_KEY = "codiman-software-brief-v2";
@@ -987,76 +963,165 @@
       return value(key);
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function buildReport() {
-      const copy = reportCopy[lang];
-      const project = value("projectName");
-      const date = new Intl.DateTimeFormat(lang === "fa" ? "fa-IR" : "en-GB", { dateStyle: "long" }).format(new Date());
-      const sections = copy.sections.map(([title, rows]) => {
-        const body = rows.map(([label, key]) => {
-          const answer = displayValue(key);
-          return `<div class="pdf-row"><div class="pdf-label">${escapeHtml(label)}</div><div class="pdf-value${answer ? "" : " pdf-empty"}">${escapeHtml(answer || copy.empty)}</div></div>`;
-        }).join("");
-        return `<section class="pdf-section"><h3>${escapeHtml(title)}</h3>${body}</section>`;
-      }).join("");
-      document.getElementById("pdf-report").innerHTML = `
-        <div class="pdf-page" dir="${lang === "fa" ? "rtl" : "ltr"}">
-          <header class="pdf-head">
-            <div class="pdf-headline">
-              <div><div class="pdf-brand">CodiMan</div><h1 class="pdf-title">${escapeHtml(copy.title)} — ${escapeHtml(project)}</h1></div>
-              <div class="pdf-date">${escapeHtml(date)}</div>
-            </div>
-          </header>
-          ${sections}
-          <footer class="pdf-footer">${escapeHtml(copy.footer)}</footer>
-        </div>`;
-      const report = document.getElementById("pdf-report");
-      document.body.prepend(report);
-      return report;
-    }
-
     function safeFilename() {
       const base = value("projectName") || "project";
       const safe = base.replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "_").slice(0, 60);
       return `CodiMan_Brief_${safe}.pdf`;
     }
 
-    function pdfOptions() {
-      return {
-        margin: 0,
-        filename: safeFilename(),
-        image: { type: "jpeg", quality: .96 },
-        html2canvas: {
-          scale: 1.55,
-          useCORS: true,
-          letterRendering: true,
-          backgroundColor: "#ffffff",
-          scrollX: 0,
-          scrollY: 0,
-          windowWidth: 794
-        },
-        jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"], avoid: [".pdf-section"] }
-      };
+    function wrapCanvasText(ctx, text, maxWidth) {
+      const paragraphs = String(text).split(/\n/);
+      const lines = [];
+      paragraphs.forEach((paragraph, paragraphIndex) => {
+        const words = paragraph.trim().split(/\s+/).filter(Boolean);
+        if (!words.length) {
+          lines.push("");
+          return;
+        }
+        let line = "";
+        words.forEach(word => {
+          const candidate = line ? `${line} ${word}` : word;
+          if (line && ctx.measureText(candidate).width > maxWidth) {
+            lines.push(line);
+            line = word;
+          } else {
+            line = candidate;
+          }
+        });
+        if (line) lines.push(line);
+        if (paragraphIndex < paragraphs.length - 1) lines.push("");
+      });
+      return lines.length ? lines : [""];
     }
 
-    async function prepareReport() {
-      if (typeof html2pdf === "undefined") throw new Error("PDF library unavailable");
+    async function createPdfDocument() {
+      if (!window.jspdf?.jsPDF) throw new Error("PDF library unavailable");
       await document.fonts.ready;
-      const report = buildReport();
-      report.scrollIntoView({ block: "start" });
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      return report;
+      await Promise.all([
+        document.fonts.load('400 20px "Vazirmatn"'),
+        document.fonts.load('700 20px "Vazirmatn"'),
+        document.fonts.load('700 20px "Inter"')
+      ]);
+
+      const copy = reportCopy[lang];
+      const rtl = lang === "fa";
+      const font = rtl ? "Vazirmatn" : "Inter";
+      const W = 1240;
+      const H = 1754;
+      const M = 82;
+      const BOTTOM = H - 92;
+      const LABEL_WIDTH = 265;
+      const GAP = 30;
+      const VALUE_WIDTH = W - (M * 2) - LABEL_WIDTH - GAP;
+      const pages = [];
+      let canvas;
+      let ctx;
+      let y;
+
+      function setText(size, weight = 400, color = "#182622") {
+        ctx.font = `${weight} ${size}px "${font}", sans-serif`;
+        ctx.fillStyle = color;
+        ctx.textBaseline = "top";
+        ctx.direction = rtl ? "rtl" : "ltr";
+      }
+
+      function logicalX(offset = 0) {
+        return rtl ? W - M - offset : M + offset;
+      }
+
+      function alignStart() {
+        ctx.textAlign = rtl ? "right" : "left";
+      }
+
+      function drawPageHeader(continuation = false) {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, W, H);
+        setText(22, 800, "#1f6f5c");
+        alignStart();
+        ctx.fillText("CodiMan", logicalX(), 62);
+
+        const date = new Intl.DateTimeFormat(rtl ? "fa-IR" : "en-GB", { dateStyle: "long" }).format(new Date());
+        setText(17, 500, "#71807c");
+        ctx.textAlign = rtl ? "left" : "right";
+        ctx.fillText(date, rtl ? M : W - M, 66);
+
+        const title = continuation
+          ? (rtl ? "ادامه بریف پروژه" : "Project brief — continued")
+          : `${copy.title} — ${value("projectName")}`;
+        setText(38, 800, "#14221f");
+        alignStart();
+        const titleLines = wrapCanvasText(ctx, title, W - (M * 2));
+        titleLines.slice(0, 2).forEach((line, index) => ctx.fillText(line, logicalX(), 108 + index * 50));
+        const lineY = 108 + Math.min(titleLines.length, 2) * 50 + 20;
+        ctx.fillStyle = "#1f6f5c";
+        ctx.fillRect(M, lineY, W - (M * 2), 4);
+        y = lineY + 38;
+      }
+
+      function newPage() {
+        canvas = document.createElement("canvas");
+        canvas.width = W;
+        canvas.height = H;
+        ctx = canvas.getContext("2d");
+        pages.push(canvas);
+        drawPageHeader(pages.length > 1);
+      }
+
+      function ensureSpace(height) {
+        if (y + height > BOTTOM) newPage();
+      }
+
+      function drawSection(title, rows) {
+        ensureSpace(92);
+        setText(25, 800, "#1f6f5c");
+        alignStart();
+        ctx.fillText(title, logicalX(), y);
+        y += 42;
+        ctx.fillStyle = "#dce7e3";
+        ctx.fillRect(M, y, W - (M * 2), 2);
+        y += 18;
+
+        rows.forEach(([label, key]) => {
+          const answer = displayValue(key) || copy.empty;
+          setText(20, 400, displayValue(key) ? "#182622" : "#9aa7a3");
+          const answerLines = wrapCanvasText(ctx, answer, VALUE_WIDTH);
+          const rowHeight = Math.max(34, answerLines.length * 31) + 16;
+          ensureSpace(rowHeight);
+
+          setText(18, 700, "#75837f");
+          alignStart();
+          ctx.fillText(label, logicalX(), y + 3);
+
+          setText(20, 400, displayValue(key) ? "#182622" : "#9aa7a3");
+          alignStart();
+          const valueX = logicalX(LABEL_WIDTH + GAP);
+          answerLines.forEach((line, index) => ctx.fillText(line, valueX, y + index * 31));
+          y += rowHeight;
+        });
+        y += 15;
+      }
+
+      newPage();
+      copy.sections.forEach(([title, rows]) => drawSection(title, rows));
+      ensureSpace(55);
+      ctx.fillStyle = "#dce7e3";
+      ctx.fillRect(M, y, W - (M * 2), 2);
+      setText(15, 500, "#8b9894");
+      ctx.textAlign = "center";
+      ctx.fillText(copy.footer, W / 2, y + 17);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait", compress: true });
+      pages.forEach((page, index) => {
+        if (index) pdf.addPage("a4", "portrait");
+        pdf.addImage(page.toDataURL("image/jpeg", .94), "JPEG", 0, 0, 595.28, 841.89, undefined, "FAST");
+      });
+      return pdf;
     }
 
     async function createPdfBlob() {
-      const report = await prepareReport();
-      return html2pdf().set(pdfOptions()).from(report).toPdf().outputPdf("blob");
+      const pdf = await createPdfDocument();
+      return pdf.output("blob");
     }
 
     function setBusy(busy) {
@@ -1071,12 +1136,11 @@
 
     async function handleAction(type) {
       if (!validateForm()) return;
-      const previousScroll = window.scrollY;
       setBusy(true);
       try {
         if (type === "download") {
-          const report = await prepareReport();
-          await html2pdf().set(pdfOptions()).from(report).save();
+          const pdf = await createPdfDocument();
+          pdf.save(safeFilename());
           showToast(lang === "fa" ? "PDF دانلود شد." : "PDF downloaded.");
         } else {
           const blob = await createPdfBlob();
@@ -1106,8 +1170,6 @@
           showToast(lang === "fa" ? "ساخت PDF ممکن نشد؛ اتصال اینترنت را بررسی کنید." : "Could not create the PDF. Check your connection.");
         }
       } finally {
-        document.getElementById("pdf-report").replaceChildren();
-        window.scrollTo(0, previousScroll);
         setBusy(false);
       }
     }
