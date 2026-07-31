@@ -1031,16 +1031,31 @@
         margin: 0,
         filename: safeFilename(),
         image: { type: "jpeg", quality: .96 },
-        html2canvas: { scale: 1.55, useCORS: true, letterRendering: true, backgroundColor: "#ffffff" },
+        html2canvas: {
+          scale: 1.55,
+          useCORS: true,
+          letterRendering: true,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: 794
+        },
         jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["css", "legacy"], avoid: [".pdf-section"] }
       };
     }
 
-    async function createPdfBlob() {
+    async function prepareReport() {
       if (typeof html2pdf === "undefined") throw new Error("PDF library unavailable");
       await document.fonts.ready;
       const report = buildReport();
+      report.scrollIntoView({ block: "start" });
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return report;
+    }
+
+    async function createPdfBlob() {
+      const report = await prepareReport();
       return html2pdf().set(pdfOptions()).from(report).toPdf().outputPdf("blob");
     }
 
@@ -1056,11 +1071,11 @@
 
     async function handleAction(type) {
       if (!validateForm()) return;
+      const previousScroll = window.scrollY;
       setBusy(true);
       try {
         if (type === "download") {
-          const report = buildReport();
-          await document.fonts.ready;
+          const report = await prepareReport();
           await html2pdf().set(pdfOptions()).from(report).save();
           showToast(lang === "fa" ? "PDF دانلود شد." : "PDF downloaded.");
         } else {
@@ -1092,6 +1107,7 @@
         }
       } finally {
         document.getElementById("pdf-report").replaceChildren();
+        window.scrollTo(0, previousScroll);
         setBusy(false);
       }
     }
