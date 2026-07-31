@@ -295,15 +295,23 @@
     [dir="rtl"] .toast.show { transform: translate(50%, 0); }
 
     #pdf-report {
-      position: fixed;
+      position: absolute;
       left: 0;
       top: 0;
-      z-index: -1000;
+      z-index: -1;
       width: 794px;
       background: white;
       color: #182622;
       font-family: "Vazirmatn", "Inter", sans-serif;
       pointer-events: none;
+    }
+    body.pdf-building #pdf-report { z-index: 1000; }
+    body.pdf-building::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(243, 247, 245, .98);
     }
     .pdf-page { padding: 46px 50px; }
     .pdf-head { border-bottom: 3px solid #1f6f5c; padding-bottom: 20px; margin-bottom: 25px; }
@@ -1058,6 +1066,7 @@
     async function handleAction(type) {
       if (!validateForm()) return;
       setBusy(true);
+      document.body.classList.add("pdf-building");
       try {
         if (type === "download") {
           const report = buildReport();
@@ -1092,6 +1101,8 @@
           showToast(lang === "fa" ? "ساخت PDF ممکن نشد؛ اتصال اینترنت را بررسی کنید." : "Could not create the PDF. Check your connection.");
         }
       } finally {
+        document.body.classList.remove("pdf-building");
+        document.getElementById("pdf-report").replaceChildren();
         setBusy(false);
       }
     }
