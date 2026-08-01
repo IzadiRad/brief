@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#12372f">
+  <meta name="description" content="بریف هوشمند پروژه نرم‌افزاری CodiMan — بدون نیاز به دانش فنی، در چند دقیقه پروژه‌تان را شفاف کنید و خروجی PDF بگیرید.">
   <title>بریف پروژه نرم‌افزاری | CodiMan</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2312372f'/%3E%3Ctext x='32' y='42' font-size='30' font-weight='bold' text-anchor='middle' fill='%23e9b949' font-family='sans-serif'%3EC%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,7 +14,7 @@
   <style>
     :root {
       --ink: #14221f;
-      --muted: #677773;
+      --muted: #63736e;
       --line: #dfe8e5;
       --paper: #fff;
       --wash: #f3f7f5;
@@ -35,25 +37,26 @@
         linear-gradient(180deg, #f8fbfa 0, var(--wash) 100%);
       font-family: "Vazirmatn", "Inter", sans-serif;
       min-height: 100vh;
-      padding-bottom: 112px;
+      padding-bottom: 118px;
     }
     body[dir="ltr"] { font-family: "Inter", "Vazirmatn", sans-serif; }
     button, input, textarea, select { font: inherit; }
     button { cursor: pointer; }
     a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
 
     .topbar {
       position: sticky;
       inset-block-start: 0;
       z-index: 20;
       border-bottom: 1px solid rgba(223, 232, 229, .9);
-      background: rgba(255, 255, 255, .88);
+      background: rgba(255, 255, 255, .9);
       backdrop-filter: blur(14px);
     }
     .topbar-inner {
       width: min(760px, calc(100% - 32px));
       margin: auto;
-      min-height: 66px;
+      min-height: 62px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -63,6 +66,17 @@
     .brand em { color: var(--brand); font-style: normal; }
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .save-state { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .progress-label {
+      min-width: 44px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #e8f1ee;
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      white-space: nowrap;
+    }
     .lang-switch {
       display: flex;
       padding: 3px;
@@ -81,11 +95,41 @@
     }
     .lang-switch button.active { background: var(--paper); color: var(--brand-dark); box-shadow: 0 2px 8px rgba(18,55,47,.1); }
 
+    .step-nav {
+      width: min(760px, calc(100% - 32px));
+      margin: auto;
+      display: flex;
+      gap: 6px;
+      padding: 2px 0 9px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .step-nav::-webkit-scrollbar { display: none; }
+    .step-chip {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 750;
+      transition: .16s ease;
+      white-space: nowrap;
+    }
+    .step-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #cfdbd7; transition: .16s ease; }
+    .step-chip.done .dot { background: var(--brand); box-shadow: 0 0 0 3px rgba(31,111,92,.14); }
+    .step-chip.active { border-color: var(--brand); color: var(--brand-dark); background: #edf6f3; }
+    .step-chip:hover { border-color: #8ab5a8; }
+
     .progress-track { height: 3px; background: #e7efec; }
     .progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--brand), var(--accent)); transition: width .3s ease; }
 
     main { width: min(760px, calc(100% - 32px)); margin: auto; }
-    .hero { padding: 54px 12px 28px; text-align: center; }
+    .hero { padding: 50px 12px 26px; text-align: center; }
     .eyebrow {
       display: inline-flex;
       align-items: center;
@@ -100,9 +144,9 @@
     }
     .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
     h1 { margin: 18px 0 10px; font-size: clamp(28px, 6vw, 44px); line-height: 1.25; letter-spacing: -.04em; }
-    .hero p { max-width: 580px; margin: auto; color: var(--muted); font-size: 14px; line-height: 2; }
+    .hero p { max-width: 580px; margin: auto; color: var(--muted); font-size: 14.5px; line-height: 2; }
     .hero-meta { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-    .meta-chip { padding: 7px 11px; border-radius: 999px; background: #e8f1ee; color: #3f6259; font-size: 10px; font-weight: 700; }
+    .meta-chip { padding: 7px 11px; border-radius: 999px; background: #e8f1ee; color: #3f6259; font-size: 10.5px; font-weight: 700; }
 
     .section-card {
       position: relative;
@@ -112,6 +156,7 @@
       border: 1px solid rgba(223, 232, 229, .95);
       border-radius: var(--radius);
       box-shadow: 0 5px 18px rgba(18, 55, 47, .035);
+      scroll-margin-top: 132px;
     }
     .section-heading { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 22px; }
     .step {
@@ -125,17 +170,22 @@
       font-size: 11px;
       font-weight: 900;
       box-shadow: 0 6px 14px rgba(18,55,47,.18);
+      transition: .2s ease;
     }
-    h2 { font-size: 16px; margin: 1px 0 3px; }
-    .section-heading p { color: var(--muted); font-size: 11px; margin: 0; line-height: 1.7; }
+    .step.done { background: var(--brand); font-size: 13px; }
+    h2 { font-size: 16.5px; margin: 1px 0 3px; }
+    .section-heading p { color: var(--muted); font-size: 11.5px; margin: 0; line-height: 1.7; }
     .fields { display: grid; gap: 17px; }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .field label, .group-label { display: block; margin-bottom: 7px; font-size: 11px; color: #40534e; font-weight: 800; }
+    .field label, .group-label { display: block; margin-bottom: 7px; font-size: 12px; color: #40534e; font-weight: 800; }
+    .group-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .count { padding: 2px 8px; border-radius: 999px; background: #eef4f2; color: #6d827c; font-size: 10px; font-weight: 700; }
+    .count.full { background: #e2f0ea; color: var(--brand); }
     .required { color: var(--danger); }
     .optional { color: #92a19d; font-weight: 500; }
     .input {
       width: 100%;
-      min-height: 46px;
+      min-height: 47px;
       padding: 11px 13px;
       color: var(--ink);
       background: #fbfdfc;
@@ -143,13 +193,13 @@
       border-radius: 13px;
       transition: .2s ease;
     }
-    textarea.input { min-height: 82px; resize: vertical; line-height: 1.75; }
+    textarea.input { min-height: 84px; resize: vertical; line-height: 1.75; }
     .input::placeholder { color: #a0aca9; }
     .input:focus { outline: 0; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(31,111,92,.09); background: white; }
     .input.invalid { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(194,65,59,.08); }
-    .error { display: none; margin-top: 5px; color: var(--danger); font-size: 10px; }
+    .error { display: none; margin-top: 5px; color: var(--danger); font-size: 10.5px; }
     .error.show { display: block; }
-    .hint { margin: 6px 1px 0; color: #879692; font-size: 10px; line-height: 1.7; }
+    .hint { margin: 6px 1px 0; color: #879692; font-size: 11px; line-height: 1.7; }
 
     .choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
     .choice {
@@ -157,13 +207,13 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      min-height: 48px;
+      min-height: 50px;
       padding: 10px 12px;
       border: 1.5px solid var(--line);
       border-radius: 13px;
       background: #fff;
       color: #4b5e59;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 650;
       cursor: pointer;
       transition: .16s ease;
@@ -171,7 +221,8 @@
     }
     .choice:hover { border-color: #8ab5a8; transform: translateY(-1px); }
     .choice:has(input:checked) { color: var(--brand-dark); border-color: var(--brand); background: #edf6f3; box-shadow: inset 0 0 0 1px rgba(31,111,92,.08); }
-    .choice input { width: 16px; height: 16px; margin: 0; accent-color: var(--brand); flex: 0 0 auto; }
+    .choice:has(input:focus-visible) { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .choice input { width: 17px; height: 17px; margin: 0; accent-color: var(--brand); flex: 0 0 auto; }
     .choice small { display: block; color: var(--muted); font-size: 9px; font-weight: 500; margin-top: 2px; }
 
     details.advanced { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 15px; }
@@ -181,7 +232,7 @@
       justify-content: space-between;
       align-items: center;
       color: var(--brand);
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 800;
       cursor: pointer;
     }
@@ -197,6 +248,7 @@
       border: 0;
     }
     .tradeoff .step { color: var(--brand-dark); background: var(--accent); }
+    .tradeoff .step.done { background: var(--accent); }
     .tradeoff h2 { color: white; }
     .tradeoff .section-heading p { color: #c7d8d3; }
     .tradeoff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -214,9 +266,10 @@
     }
     .trade-choice input { position: absolute; opacity: 0; pointer-events: none; }
     .trade-choice:has(input:checked) { border-color: var(--accent); background: rgba(233,185,73,.16); transform: translateY(-2px); }
+    .trade-choice:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
     .trade-icon { font-size: 26px; margin-bottom: 6px; }
-    .trade-choice b { font-size: 12px; }
-    .trade-choice small { color: #c9dad5; font-size: 9px; margin-top: 3px; }
+    .trade-choice b { font-size: 12.5px; }
+    .trade-choice small { color: #c9dad5; font-size: 9.5px; margin-top: 3px; }
     .trade-result {
       min-height: 46px;
       margin-top: 12px;
@@ -224,7 +277,7 @@
       border-radius: 13px;
       background: rgba(0,0,0,.15);
       color: #dce9e5;
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1.7;
       text-align: center;
     }
@@ -232,16 +285,17 @@
 
     .moscow { display: grid; gap: 10px; }
     .priority-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: stretch; }
-    .priority-tag { display: flex; flex-direction: column; justify-content: center; padding: 12px; border-radius: 13px; font-size: 11px; font-weight: 900; }
-    .priority-tag small { font-size: 8px; font-weight: 600; opacity: .72; margin-top: 3px; }
+    .priority-tag { display: flex; flex-direction: column; justify-content: center; padding: 12px; border-radius: 13px; font-size: 11.5px; font-weight: 900; }
+    .priority-tag small { font-size: 8.5px; font-weight: 600; opacity: .72; margin-top: 3px; }
     .must { background: #fce9e7; color: #9d342f; }
     .should { background: #fff4d7; color: #7d5a08; }
     .could { background: #e6f3ef; color: #246454; }
     .wont { background: #edf0f2; color: #59666b; }
     .priority-row textarea { min-height: 66px; }
 
-    .notice { padding: 13px 15px; border-radius: 13px; background: #f0f6f4; color: #58706a; font-size: 10px; line-height: 1.8; }
-    .privacy { display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .notice { padding: 13px 15px; border-radius: 13px; background: #f0f6f4; color: #58706a; font-size: 10.5px; line-height: 1.8; }
+    .privacy { display: flex; align-items: flex-start; gap: 9px; color: var(--muted); font-size: 10.5px; line-height: 1.7; cursor: pointer; }
+    .privacy input { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--brand); flex: 0 0 auto; }
 
     .actionbar {
       position: fixed;
@@ -261,7 +315,7 @@
       border-radius: 14px;
       padding: 10px 14px;
       color: white;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 850;
       transition: .16s ease;
     }
@@ -271,18 +325,105 @@
     .action-dark { background: var(--brand-dark); }
     .action-ghost { color: #53635f; background: #edf2f0; }
 
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(15, 26, 23, .48);
+      backdrop-filter: blur(5px);
+    }
+    .overlay[hidden] { display: none; }
+    .modal {
+      width: min(680px, 100%);
+      max-height: min(84vh, 760px);
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .3);
+    }
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 19px 22px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .modal-head h3 { margin: 0 0 4px; font-size: 15.5px; }
+    .modal-head p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .modal-close {
+      flex: 0 0 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      background: #eef3f1;
+      color: #53635f;
+      font-size: 15px;
+      line-height: 1;
+    }
+    .modal-body { overflow-y: auto; padding: 8px 22px 14px; }
+    .modal-note {
+      margin: 12px 0 4px;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 10.5px;
+      line-height: 1.8;
+      background: #fdf4dd;
+      color: #7d5a08;
+    }
+    .modal-note.ok { background: #eaf4f0; color: #2c5d50; }
+    .review-section { padding: 13px 0 4px; }
+    .review-section h4 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 4px;
+      color: var(--brand);
+      font-size: 12px;
+    }
+    .review-section h4::after { content: ""; flex: 1; height: 1px; background: #e3ece9; }
+    .review-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px;
+      padding: 7px 0;
+      border-bottom: 1px dashed #eef3f1;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    .review-row:last-child { border-bottom: 0; }
+    .review-row .k { color: #75837f; font-weight: 750; font-size: 11px; padding-top: 1px; }
+    .review-row .v { white-space: pre-wrap; word-break: break-word; }
+    .review-row .v.empty { color: #a7b3af; }
+    .modal-foot {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      padding: 13px 22px calc(15px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: #fbfdfc;
+    }
+    .modal-foot .action { min-height: 46px; }
+
     .toast {
       position: fixed;
       inset-block-start: 78px;
       inset-inline-start: 50%;
-      z-index: 50;
+      z-index: 70;
       max-width: calc(100% - 32px);
       padding: 11px 17px;
       color: white;
       background: #172622;
       border-radius: 13px;
       box-shadow: var(--shadow);
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 750;
       opacity: 0;
       transform: translate(-50%, -12px);
@@ -294,21 +435,29 @@
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
     [dir="rtl"] .toast.show { transform: translate(50%, 0); }
 
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+
     @media (max-width: 620px) {
-      body { padding-bottom: 168px; }
-      .topbar-inner, main { width: min(100% - 22px, 760px); }
+      body { padding-bottom: 178px; }
+      .topbar-inner, main, .step-nav { width: min(100% - 22px, 760px); }
       .save-state { display: none; }
-      .hero { padding-top: 38px; }
-      .section-card { padding: 21px 17px; border-radius: 18px; }
+      .hero { padding-top: 36px; }
+      .section-card { padding: 21px 17px; border-radius: 18px; scroll-margin-top: 122px; }
       .two-col { grid-template-columns: 1fr; }
       .choice-grid { grid-template-columns: 1fr; }
       .tradeoff-grid { gap: 7px; }
       .trade-choice { min-height: 104px; padding: 10px 4px; }
       .trade-choice small { max-width: 84px; }
       .priority-row { grid-template-columns: 82px 1fr; }
-      .actionbar-inner { grid-template-columns: 1fr 1fr; }
+      .actionbar-inner { grid-template-columns: 1fr auto; }
       .action-primary { grid-column: 1 / -1; }
-      .action-ghost { display: none; }
+      .action-ghost { padding-inline: 16px; }
+      .review-row { grid-template-columns: 1fr; gap: 2px; padding: 9px 0; }
+      .modal { max-height: 88vh; border-radius: 18px; }
+      .modal-foot { grid-template-columns: 1fr 1.4fr; }
     }
   </style>
 </head>
@@ -317,31 +466,34 @@
     <div class="topbar-inner">
       <div class="brand">Codi<em>Man</em></div>
       <div class="top-actions">
-        <span id="save-state" class="save-state" data-fa="پاسخ‌ها روی همین دستگاه ذخیره می‌شوند" data-en="Answers are saved on this device"></span>
+        <span id="save-state" class="save-state" role="status" data-fa="پاسخ‌ها روی همین دستگاه ذخیره می‌شوند" data-en="Answers are saved on this device"></span>
+        <span id="progress-label" class="progress-label" aria-hidden="true"></span>
         <div class="lang-switch" aria-label="Language">
           <button id="lang-fa" type="button" class="active" onclick="setLanguage('fa')">فا</button>
           <button id="lang-en" type="button" onclick="setLanguage('en')">EN</button>
         </div>
       </div>
     </div>
-    <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+    <nav id="step-nav" class="step-nav" aria-label="Sections"></nav>
+    <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
   </div>
 
   <main>
     <header class="hero">
       <span class="eyebrow" data-fa="شروع یک همکاری شفاف" data-en="Start with shared clarity"></span>
       <h1 data-fa="بریف هوشمند پروژه نرم‌افزاری" data-en="Smart software project brief"></h1>
-      <p data-fa="لازم نیست فنی باشید. فقط مسئله و اولویت‌ها را بگویید؛ جزئیات اختیاری‌اند و بعداً با هم کاملشان می‌کنیم." data-en="You do not need to be technical. Tell us the problem and priorities; details are optional and we can refine them together."></p>
+      <p data-fa="لازم نیست فنی باشید. فقط مسئله و اولویت‌ها را بگویید؛ جزئیات اختیاری‌اند و بعداً با هم کاملشان می‌کنیم. قبل از ارسال هم می‌توانید همه پاسخ‌ها را یک‌جا مرور کنید." data-en="You do not need to be technical. Tell us the problem and priorities; details are optional and we can refine them together. You can review everything in one place before sending."></p>
       <div class="hero-meta">
         <span class="meta-chip" data-fa="حدود ۵ تا ۷ دقیقه" data-en="About 5–7 minutes"></span>
         <span class="meta-chip" data-fa="فقط ۲ پاسخ الزامی" data-en="Only 2 required answers"></span>
         <span class="meta-chip" data-fa="ذخیره خودکار" data-en="Auto-saved"></span>
+        <span class="meta-chip" data-fa="مرور قبل از ارسال" data-en="Review before sending"></span>
         <span class="meta-chip" data-fa="خروجی PDF" data-en="PDF export"></span>
       </div>
     </header>
 
     <form id="brief-form" novalidate>
-      <section class="section-card" id="section-basics">
+      <section class="section-card" id="section-1">
         <div class="section-heading">
           <span class="step">01</span>
           <div>
@@ -353,7 +505,7 @@
           <div class="two-col">
             <div class="field">
               <label for="project-name"><span data-fa="نام پروژه یا برند" data-en="Project or brand name"></span> <span class="required">*</span></label>
-              <input class="input" id="project-name" name="projectName" required autocomplete="organization" data-ph-fa="مثلاً پلتفرم سلامت آریا" data-ph-en="e.g. Aria Health Platform">
+              <input class="input" id="project-name" name="projectName" required aria-required="true" autocomplete="organization" data-ph-fa="مثلاً پلتفرم سلامت آریا" data-ph-en="e.g. Aria Health Platform">
               <span class="error" data-fa="لطفاً یک نام وارد کنید." data-en="Please enter a name."></span>
             </div>
             <div class="field">
@@ -371,7 +523,7 @@
           </div>
           <div class="field">
             <label for="problem"><span data-fa="چه مسئله‌ای باید حل شود؟" data-en="What problem should this solve?"></span> <span class="required">*</span></label>
-            <textarea class="input" id="problem" name="problem" required data-ph-fa="الان چه چیزی سخت، کند یا پرهزینه است و بعد از ساخت پروژه چه چیزی باید بهتر شود؟" data-ph-en="What is difficult, slow, or expensive today—and what should improve after launch?"></textarea>
+            <textarea class="input" id="problem" name="problem" required aria-required="true" data-ph-fa="الان چه چیزی سخت، کند یا پرهزینه است و بعد از ساخت پروژه چه چیزی باید بهتر شود؟" data-ph-en="What is difficult, slow, or expensive today—and what should improve after launch?"></textarea>
             <span class="error" data-fa="لطفاً مسئله اصلی را کوتاه توضیح دهید." data-en="Please briefly describe the main problem."></span>
           </div>
           <div class="field">
@@ -381,7 +533,7 @@
         </div>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-2">
         <div class="section-heading">
           <span class="step">02</span>
           <div>
@@ -389,7 +541,7 @@
             <p data-fa="حداکثر دو نوع و سه نتیجه انتخاب کنید." data-en="Choose up to two types and three outcomes."></p>
           </div>
         </div>
-        <span class="group-label" data-fa="قرار است چه چیزی ساخته یا بهتر شود؟" data-en="What should be built or improved?"></span>
+        <span class="group-label"><span data-fa="قرار است چه چیزی ساخته یا بهتر شود؟" data-en="What should be built or improved?"></span><span class="count" data-count="productType" data-max="2"></span></span>
         <div class="choice-grid" id="product-types">
           <label class="choice"><input type="checkbox" name="productType" value="website"><span data-fa="وب‌سایت شرکتی / محتوایی" data-en="Corporate / content website"></span></label>
           <label class="choice"><input type="checkbox" name="productType" value="webapp"><span data-fa="وب‌اپلیکیشن یا پنل" data-en="Web app or dashboard"></span></label>
@@ -402,7 +554,7 @@
           <label class="choice"><input type="checkbox" name="productType" value="unsure"><span data-fa="مطمئن نیستم؛ پیشنهاد بدهید" data-en="Not sure—please recommend"></span></label>
         </div>
         <div style="height:17px"></div>
-        <span class="group-label" data-fa="موفقیت این پروژه چه شکلی است؟" data-en="What would success look like?"></span>
+        <span class="group-label"><span data-fa="موفقیت این پروژه چه شکلی است؟" data-en="What would success look like?"></span><span class="count" data-count="outcome" data-max="3"></span></span>
         <div class="choice-grid" id="outcomes">
           <label class="choice"><input type="checkbox" name="outcome" value="sales"><span data-fa="فروش یا درآمد بیشتر" data-en="More sales or revenue"></span></label>
           <label class="choice"><input type="checkbox" name="outcome" value="leads"><span data-fa="لید، تماس یا ثبت‌نام بیشتر" data-en="More leads, calls, or signups"></span></label>
@@ -422,7 +574,7 @@
         </details>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-3">
         <div class="section-heading">
           <span class="step">03</span>
           <div>
@@ -446,7 +598,7 @@
         </div>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-4">
         <div class="section-heading">
           <span class="step">04</span>
           <div>
@@ -475,7 +627,7 @@
         <p class="hint" data-fa="نکته: اگر همه‌چیز «باید باشد» است، هنوز اولویت واقعی مشخص نشده." data-en="Tip: if everything is a must-have, the real priorities are not clear yet."></p>
       </section>
 
-      <section class="section-card tradeoff">
+      <section class="section-card tradeoff" id="section-5">
         <div class="section-heading">
           <span class="step">05</span>
           <div>
@@ -487,7 +639,7 @@
           <label class="trade-choice">
             <input type="checkbox" name="tradeoff" value="quality">
             <span class="trade-icon">✦</span>
-            <b data-fa="کیفیت و عمق" data-en="Quality & depth"></b>
+            <b data-fa="کیفیت و عمق" data-en="Quality &amp; depth"></b>
             <small data-fa="جزئیات، تست و دوام" data-en="Polish, testing, longevity"></small>
           </label>
           <label class="trade-choice">
@@ -506,7 +658,7 @@
         <div id="trade-result" class="trade-result" data-fa="دو گزینه را انتخاب کنید تا اثر انتخابتان را ببینید." data-en="Choose two options to see the trade-off."></div>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-6">
         <div class="section-heading">
           <span class="step">06</span>
           <div>
@@ -543,7 +695,7 @@
         </details>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-7">
         <div class="section-heading">
           <span class="step">07</span>
           <div>
@@ -551,6 +703,7 @@
             <p data-fa="حال‌وهوای مطلوب را انتخاب کنید؛ حداکثر سه مورد." data-en="Choose the desired feel—up to three."></p>
           </div>
         </div>
+        <span class="group-label"><span data-fa="حال‌وهوای بصری مطلوب" data-en="Desired visual direction"></span><span class="count" data-count="vibe" data-max="3"></span></span>
         <div class="choice-grid" id="vibes">
           <label class="choice"><input type="checkbox" name="vibe" value="minimal"><span data-fa="مینیمال و روشن" data-en="Minimal and clear"></span></label>
           <label class="choice"><input type="checkbox" name="vibe" value="professional"><span data-fa="حرفه‌ای و قابل‌اعتماد" data-en="Professional and trustworthy"></span></label>
@@ -592,7 +745,7 @@
         </details>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-8">
         <div class="section-heading">
           <span class="step">08</span>
           <div>
@@ -602,7 +755,7 @@
         </div>
         <div class="fields">
           <div>
-            <span class="group-label" data-fa="ترجیح بودجه" data-en="Budget preference"></span>
+            <span class="group-label"><span data-fa="ترجیح بودجه" data-en="Budget preference"></span></span>
             <div class="choice-grid">
               <label class="choice"><input type="radio" name="budgetMode" value="estimate"><span data-fa="شما بر اساس راهکار برآورد کنید" data-en="Estimate based on your solution"></span></label>
               <label class="choice"><input type="radio" name="budgetMode" value="range"><span data-fa="بازه بودجه دارم" data-en="I have a budget range"></span></label>
@@ -637,7 +790,7 @@
         </div>
       </section>
 
-      <section class="section-card">
+      <section class="section-card" id="section-9">
         <div class="section-heading">
           <span class="step">09</span>
           <div>
@@ -656,8 +809,9 @@
               <input class="input" id="contact-name" name="contactName" autocomplete="name">
             </div>
             <div class="field">
-              <label for="contact-way"><span data-fa="ایمیل یا آیدی تلگرام" data-en="Email or Telegram ID"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
-              <input class="input" id="contact-way" name="contactWay" autocomplete="email" data-ph-fa="email@example.com یا @username" data-ph-en="email@example.com or @username">
+              <label for="contact-way"><span data-fa="راه ارتباطی (ایمیل، تلگرام یا شماره)" data-en="Contact (email, Telegram, or phone)"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="contact-way" name="contactWay" autocomplete="email" data-ph-fa="email@example.com، @username یا ۰۹…" data-ph-en="email@example.com, @username, or phone">
+              <p class="hint" data-fa="برای اینکه بتوانیم سریع پاسخ دهیم، یک راه ارتباطی بگذارید." data-en="Leave one contact method so we can reply quickly."></p>
             </div>
           </div>
           <div class="notice" data-fa="اطلاعات فرم به هیچ سروری ارسال نمی‌شود. پاسخ‌ها فقط در مرورگر شما ذخیره می‌شوند و هنگام دانلود یا اشتراک‌گذاری، PDF روی همان دستگاه ساخته می‌شود." data-en="This form sends nothing to a server. Answers stay in your browser, and the PDF is generated locally when you download or share it."></div>
@@ -672,9 +826,26 @@
 
   <div class="actionbar">
     <div class="actionbar-inner">
-      <button class="action action-primary" type="button" data-action="share" onclick="handleAction('share')" data-fa="ارسال PDF با تلگرام / اشتراک‌گذاری" data-en="Share PDF via Telegram / apps"></button>
-      <button class="action action-dark" type="button" data-action="download" onclick="handleAction('download')" data-fa="دانلود PDF" data-en="Download PDF"></button>
+      <button class="action action-primary" type="button" data-action="share" onclick="handleAction('share')" data-fa="مرور و ارسال با تلگرام" data-en="Review &amp; share via Telegram"></button>
+      <button class="action action-dark" type="button" data-action="download" onclick="handleAction('download')" data-fa="مرور و دانلود PDF" data-en="Review &amp; download PDF"></button>
       <button class="action action-ghost" type="button" onclick="clearDraft()" data-fa="پاک کردن" data-en="Clear"></button>
+    </div>
+  </div>
+
+  <div id="review-overlay" class="overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="review-title">
+      <div class="modal-head">
+        <div>
+          <h3 id="review-title" data-fa="مرور نهایی پاسخ‌ها" data-en="Final review of your answers"></h3>
+          <p data-fa="این دقیقاً همان محتوایی است که در PDF قرار می‌گیرد. اگر چیزی جا مانده، «ویرایش» را بزنید." data-en="This is exactly what will appear in the PDF. Choose “Edit” if anything is missing."></p>
+        </div>
+        <button class="modal-close" type="button" onclick="closeReview()" aria-label="Close">✕</button>
+      </div>
+      <div id="review-body" class="modal-body"></div>
+      <div class="modal-foot">
+        <button class="action action-ghost" type="button" onclick="closeReview()" data-fa="ویرایش پاسخ‌ها" data-en="Edit answers"></button>
+        <button class="action action-primary" type="button" id="review-confirm" onclick="confirmReview()"></button>
+      </div>
     </div>
   </div>
 
@@ -685,6 +856,7 @@
     const form = document.getElementById("brief-form");
     let lang = localStorage.getItem(`${STORAGE_KEY}:lang`) || "fa";
     let toastTimer;
+    let pendingAction = null;
 
     const labels = {
       organizationType: {
@@ -800,6 +972,85 @@
       }
     };
 
+    const NAV_LABELS = [
+      ["معرفی", "Basics"],
+      ["محصول", "Product"],
+      ["کاربران", "Users"],
+      ["اولویت‌ها", "Priorities"],
+      ["موازنه", "Trade-off"],
+      ["فنی", "Technical"],
+      ["طراحی", "Design"],
+      ["بودجه", "Budget"],
+      ["تماس", "Contact"]
+    ];
+
+    const sections = [...form.querySelectorAll("section.section-card")];
+    const stepBadges = sections.map(section => section.querySelector(".step"));
+    const LIMITS = { productType: 2, outcome: 3, vibe: 3, tradeoff: 2 };
+
+    const sectionChecks = [
+      () => Boolean(value("projectName") && value("problem")),
+      () => Boolean(checkedValues("productType").length || checkedValues("outcome").length),
+      () => Boolean(value("audience") || value("coreJourney") || value("roles")),
+      () => Boolean(value("mustHave") || value("shouldHave") || value("couldHave") || value("wontHave")),
+      () => checkedValues("tradeoff").length === 2,
+      () => Boolean(value("integrations") || checkedValues("risk").length || value("constraints") || value("nonFunctional")),
+      () => Boolean(checkedValues("vibe").length || value("references") || value("brandAssets") || value("contentStatus")),
+      () => Boolean(getRadio("budgetMode") || value("timelineMode") || value("targetDate") || value("decision")),
+      () => Boolean(value("contactWay") || value("contactName") || value("notes"))
+    ];
+
+    function buildStepNav() {
+      const nav = document.getElementById("step-nav");
+      NAV_LABELS.forEach(([fa, en], index) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "step-chip";
+        chip.dataset.section = String(index);
+        chip.innerHTML = `<span class="dot" aria-hidden="true"></span><span data-fa="${fa}" data-en="${en}"></span>`;
+        chip.addEventListener("click", () => {
+          sections[index].scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        nav.appendChild(chip);
+      });
+    }
+
+    function updateSections() {
+      const chips = document.querySelectorAll(".step-chip");
+      sectionChecks.forEach((check, index) => {
+        const done = check();
+        chips[index]?.classList.toggle("done", done);
+        const badge = stepBadges[index];
+        if (badge) {
+          if (!badge.dataset.num) badge.dataset.num = badge.textContent;
+          badge.classList.toggle("done", done);
+          badge.textContent = done ? "✓" : badge.dataset.num;
+        }
+      });
+    }
+
+    function updateActiveSection() {
+      const marker = 170;
+      let active = 0;
+      sections.forEach((section, index) => {
+        if (section.getBoundingClientRect().top <= marker) active = index;
+      });
+      document.querySelectorAll(".step-chip").forEach((chip, index) => {
+        chip.classList.toggle("active", index === active);
+      });
+    }
+
+    function updateCounters() {
+      document.querySelectorAll("[data-count]").forEach(el => {
+        const name = el.dataset.count;
+        const max = Number(el.dataset.max);
+        const selected = checkedValues(name).length;
+        const text = `${selected}/${max}`;
+        el.textContent = lang === "fa" ? toFa(text) : text;
+        el.classList.toggle("full", selected >= max);
+      });
+    }
+
     function setLanguage(next) {
       lang = next;
       localStorage.setItem(`${STORAGE_KEY}:lang`, lang);
@@ -817,6 +1068,7 @@
       document.getElementById("lang-en").classList.toggle("active", lang === "en");
       updateTradeoff();
       updateProgress();
+      if (!document.getElementById("review-overlay").hidden && pendingAction) renderReview();
     }
 
     function enforceLimit(name, max) {
@@ -914,6 +1166,12 @@
       ];
       const pct = Math.round(checkpoints.filter(Boolean).length / checkpoints.length * 100);
       document.getElementById("progress-fill").style.width = `${pct}%`;
+      document.getElementById("progress-track").setAttribute("aria-valuenow", String(pct));
+      const label = document.getElementById("progress-label");
+      label.textContent = lang === "fa" ? `${toFa(pct)}٪` : `${pct}%`;
+      updateSections();
+      updateCounters();
+      updateActiveSection();
     }
 
     function value(name) {
@@ -961,6 +1219,95 @@
         return checkedValues("tradeoff").length === 2 ? document.getElementById("trade-result").textContent : "";
       }
       return value(key);
+    }
+
+    function renderReview() {
+      const copy = reportCopy[lang];
+      const body = document.getElementById("review-body");
+      body.innerHTML = "";
+
+      const notes = [];
+      if (!value("contactWay")) {
+        notes.push(lang === "fa"
+          ? "⚠ راه ارتباطی وارد نکرده‌اید؛ برای پیگیری سریع‌تر، پیشنهاد می‌کنیم ایمیل، تلگرام یا شماره بگذارید."
+          : "⚠ No contact method provided; adding email, Telegram, or a phone number helps us follow up quickly.");
+      }
+      if (!form.elements.privacyAck.checked) {
+        notes.push(lang === "fa"
+          ? "یادآوری: مطمئن شوید اطلاعات محرمانه (رمز، کلید API، اطلاعات بانکی) در پاسخ‌ها نیست."
+          : "Reminder: make sure no secrets (passwords, API keys, banking details) are included.");
+      }
+      notes.forEach(text => {
+        const note = document.createElement("div");
+        note.className = "modal-note";
+        note.textContent = text;
+        body.appendChild(note);
+      });
+
+      let emptyCount = 0;
+      copy.sections.forEach(([title, rows]) => {
+        const wrap = document.createElement("div");
+        wrap.className = "review-section";
+        const heading = document.createElement("h4");
+        heading.textContent = title;
+        wrap.appendChild(heading);
+        rows.forEach(([label, key]) => {
+          const answer = displayValue(key);
+          if (!answer) emptyCount += 1;
+          const row = document.createElement("div");
+          row.className = "review-row";
+          const k = document.createElement("span");
+          k.className = "k";
+          k.textContent = label;
+          const v = document.createElement("span");
+          v.className = answer ? "v" : "v empty";
+          v.textContent = answer || copy.empty;
+          row.append(k, v);
+          wrap.appendChild(row);
+        });
+        body.appendChild(wrap);
+      });
+
+      if (emptyCount) {
+        const info = document.createElement("div");
+        info.className = "modal-note ok";
+        info.textContent = lang === "fa"
+          ? `${toFa(emptyCount)} مورد اختیاری خالی مانده است؛ اشکالی ندارد، بعداً با هم کاملشان می‌کنیم.`
+          : `${emptyCount} optional answers are still empty; that is fine—we can refine them together later.`;
+        body.appendChild(info);
+      }
+
+      const confirmBtn = document.getElementById("review-confirm");
+      confirmBtn.textContent = pendingAction === "share"
+        ? (lang === "fa" ? "تأیید و ارسال با تلگرام" : "Confirm & share via Telegram")
+        : (lang === "fa" ? "تأیید و دانلود PDF" : "Confirm & download PDF");
+    }
+
+    function openReview(type) {
+      pendingAction = type;
+      renderReview();
+      const overlay = document.getElementById("review-overlay");
+      overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+      document.getElementById("review-body").scrollTop = 0;
+      document.getElementById("review-confirm").focus();
+    }
+
+    function closeReview() {
+      pendingAction = null;
+      document.getElementById("review-overlay").hidden = true;
+      document.body.style.overflow = "";
+    }
+
+    async function confirmReview() {
+      const type = pendingAction;
+      if (!type) return;
+      await doExport(type);
+    }
+
+    function handleAction(type) {
+      if (!validateForm()) return;
+      openReview(type);
     }
 
     function safeFilename() {
@@ -1125,7 +1472,7 @@
     }
 
     function setBusy(busy) {
-      document.querySelectorAll("[data-action]").forEach(button => {
+      document.querySelectorAll("[data-action], #review-confirm").forEach(button => {
         button.disabled = busy;
         if (busy) button.dataset.oldText = button.textContent;
         button.textContent = busy
@@ -1134,18 +1481,19 @@
       });
     }
 
-    async function handleAction(type) {
-      if (!validateForm()) return;
+    async function doExport(type) {
       setBusy(true);
       try {
         if (type === "download") {
           const pdf = await createPdfDocument();
           pdf.save(safeFilename());
+          closeReview();
           showToast(lang === "fa" ? "PDF دانلود شد." : "PDF downloaded.");
         } else {
           const blob = await createPdfBlob();
           const file = new File([blob], safeFilename(), { type: "application/pdf" });
           if (navigator.canShare?.({ files: [file] })) {
+            closeReview();
             await navigator.share({
               files: [file],
               title: reportCopy[lang].title,
@@ -1158,6 +1506,7 @@
             link.download = safeFilename();
             link.click();
             setTimeout(() => URL.revokeObjectURL(url), 2000);
+            closeReview();
             window.open(`https://t.me/${TELEGRAM_USERNAME}`, "_blank", "noopener");
             showToast(lang === "fa"
               ? "PDF دانلود شد؛ آن را در گفت‌وگوی بازشده پیوست کنید."
@@ -1199,10 +1548,27 @@
       updateProgress();
     });
 
-    enforceLimit("productType", 2);
-    enforceLimit("outcome", 3);
-    enforceLimit("vibe", 3);
-    enforceLimit("tradeoff", 2);
+    document.getElementById("review-overlay").addEventListener("click", event => {
+      if (event.target === event.currentTarget) closeReview();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !document.getElementById("review-overlay").hidden) closeReview();
+    });
+    let scrollTick = false;
+    window.addEventListener("scroll", () => {
+      if (scrollTick) return;
+      scrollTick = true;
+      requestAnimationFrame(() => {
+        updateActiveSection();
+        scrollTick = false;
+      });
+    }, { passive: true });
+
+    buildStepNav();
+    enforceLimit("productType", LIMITS.productType);
+    enforceLimit("outcome", LIMITS.outcome);
+    enforceLimit("vibe", LIMITS.vibe);
+    enforceLimit("tradeoff", LIMITS.tradeoff);
     restoreDraft();
     document.getElementById("budget-range-wrap").hidden = getRadio("budgetMode") !== "range";
     setLanguage(lang);
