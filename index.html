@@ -480,20 +480,21 @@
 
   <main>
     <header class="hero">
-      <span class="eyebrow" data-fa="شروع یک همکاری شفاف" data-en="Start with shared clarity"></span>
-      <h1 data-fa="بریف هوشمند پروژه نرم‌افزاری" data-en="Smart software project brief"></h1>
-      <p data-fa="لازم نیست فنی باشید. فقط مسئله و اولویت‌ها را بگویید؛ جزئیات اختیاری‌اند و بعداً با هم کاملشان می‌کنیم. قبل از ارسال هم می‌توانید همه پاسخ‌ها را یک‌جا مرور کنید." data-en="You do not need to be technical. Tell us the problem and priorities; details are optional and we can refine them together. You can review everything in one place before sending."></p>
+      <span class="eyebrow" data-fa="آغاز یک همکاری شفاف" data-en="Start with shared clarity"></span>
+      <h1 id="hero-title" data-fa="بریف هوشمند پروژه نرم‌افزاری" data-en="Smart software project brief"></h1>
+      <p id="hero-lead" data-fa="تکمیل این فرم به دانش فنی نیاز ندارد. مسئله و اولویت‌های پروژه را مشخص کنید؛ بخش‌های تکمیلی تنها در صورت انتخاب شما به فرم افزوده می‌شوند و پیش از ارسال، تمامی پاسخ‌ها قابل مرور است." data-en="No technical background is required. Define the problem and priorities; supplementary sections are added only when you select them, and every answer can be reviewed before sending."></p>
       <div class="hero-meta">
         <span class="meta-chip" data-fa="حدود ۵ تا ۷ دقیقه" data-en="About 5–7 minutes"></span>
         <span class="meta-chip" data-fa="فقط ۲ پاسخ الزامی" data-en="Only 2 required answers"></span>
+        <span class="meta-chip" data-fa="ساختار ماژولار" data-en="Modular structure"></span>
         <span class="meta-chip" data-fa="ذخیره خودکار" data-en="Auto-saved"></span>
-        <span class="meta-chip" data-fa="مرور قبل از ارسال" data-en="Review before sending"></span>
+        <span class="meta-chip" data-fa="مرور پیش از ارسال" data-en="Review before sending"></span>
         <span class="meta-chip" data-fa="خروجی PDF" data-en="PDF export"></span>
       </div>
     </header>
 
     <form id="brief-form" novalidate>
-      <section class="section-card" id="section-1">
+      <section class="section-card" id="section-1" data-key="basics" data-nav-fa="معرفی" data-nav-en="Basics">
         <div class="section-heading">
           <span class="step">01</span>
           <div>
@@ -533,7 +534,27 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-2">
+      <section class="section-card" id="section-scope" data-key="scope" data-nav-fa="بخش‌ها" data-nav-en="Scope">
+        <div class="section-heading">
+          <span class="step">02</span>
+          <div>
+            <h2 data-fa="دامنه بریف را تعیین کنید" data-en="Define the scope of this brief"></h2>
+            <p data-fa="تنها بخش‌هایی که انتخاب می‌کنید به فرم افزوده می‌شوند؛ سایر بخش‌ها نمایش داده نمی‌شوند و در سند نهایی نیز درج نخواهند شد." data-en="Only the sections you select are added to the form; anything else is neither displayed nor included in the final document."></p>
+          </div>
+        </div>
+        <div class="choice-grid" id="module-grid">
+          <label class="choice"><input type="checkbox" name="module" value="users"><span><span data-fa="کاربران و مسیر اصلی" data-en="Users and core journey"></span><small data-fa="مخاطب هدف، سناریوی اصلی و نقش‌ها" data-en="Target audience, key scenario, and roles"></small></span></label>
+          <label class="choice"><input type="checkbox" name="module" value="priorities"><span><span data-fa="اولویت‌بندی قابلیت‌ها" data-en="Feature prioritization"></span><small data-fa="تفکیک الزامی، مهم و قابل تعویق" data-en="Must-have, important, and deferrable items"></small></span></label>
+          <label class="choice"><input type="checkbox" name="module" value="tradeoff"><span><span data-fa="موازنه کیفیت، سرعت و بودجه" data-en="Quality, speed, and budget trade-off"></span><small data-fa="تعیین دو اولویت اصلی پروژه" data-en="Select the project's two governing constraints"></small></span></label>
+          <label class="choice"><input type="checkbox" name="module" value="technical"><span><span data-fa="زمینه فنی، داده و ریسک" data-en="Technical context, data, and risk"></span><small data-fa="یکپارچه‌سازی‌ها، موارد حساس و محدودیت‌ها" data-en="Integrations, sensitive areas, and constraints"></small></span></label>
+          <label class="choice"><input type="checkbox" name="module" value="design"><span><span data-fa="طراحی، محتوا و برند" data-en="Design, content, and brand"></span><small data-fa="جهت‌گیری بصری و وضعیت دارایی‌ها" data-en="Visual direction and asset readiness"></small></span></label>
+          <label class="choice"><input type="checkbox" name="module" value="budget"><span><span data-fa="بودجه و زمان‌بندی" data-en="Budget and timing"></span><small data-fa="ترجیح بودجه، زمان‌بندی و تصمیم‌گیرنده" data-en="Budget preference, timeline, and decision maker"></small></span></label>
+          <label class="choice"><input type="checkbox" name="module" value="seo"><span><span data-fa="سئو و دیده‌شدن" data-en="SEO and visibility"></span><small data-fa="مبنای سرویس CodiRank — پوشش SEO، AEO و GEO" data-en="Feeds the CodiRank service — SEO, AEO, and GEO"></small></span></label>
+        </div>
+        <p class="hint"><span data-fa="چنانچه بخش سئو را اکنون انتخاب نمی‌کنید، امکان تکمیل آن به‌صورت مستقل و در زمان دیگری فراهم است:" data-en="If you skip the SEO section for now, it can be completed independently at a later time:"></span> <a href="?mode=seo" data-fa="بریف مستقل سئو" data-en="Standalone SEO brief"></a></p>
+      </section>
+
+      <section class="section-card" id="section-2" data-key="product" data-nav-fa="محصول" data-nav-en="Product">
         <div class="section-heading">
           <span class="step">02</span>
           <div>
@@ -574,12 +595,12 @@
         </details>
       </section>
 
-      <section class="section-card" id="section-3">
+      <section class="section-card" id="section-3" data-key="users" data-module="users" data-nav-fa="کاربران" data-nav-en="Users" hidden>
         <div class="section-heading">
           <span class="step">03</span>
           <div>
             <h2 data-fa="کاربران و مسیر اصلی" data-en="Users and core journey"></h2>
-            <p data-fa="به جای اصطلاح فنی، یک تجربه واقعی را تعریف کنید." data-en="Describe a real experience instead of technical details."></p>
+            <p data-fa="تجربه واقعی کاربر را توصیف کنید؛ ذکر اصطلاحات فنی ضروری نیست." data-en="Describe the user's real experience; technical terminology is not required."></p>
           </div>
         </div>
         <div class="fields">
@@ -598,12 +619,12 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-4">
+      <section class="section-card" id="section-4" data-key="priorities" data-module="priorities" data-nav-fa="اولویت‌ها" data-nav-en="Priorities" hidden>
         <div class="section-heading">
           <span class="step">04</span>
           <div>
-            <h2 data-fa="قابلیت‌ها را اولویت‌بندی کنید" data-en="Prioritize the capabilities"></h2>
-            <p data-fa="لیست ساده هم کافی است؛ لازم نیست همه ردیف‌ها را پر کنید." data-en="A simple list is enough; you do not need to fill every row."></p>
+            <h2 data-fa="اولویت‌بندی قابلیت‌ها" data-en="Prioritize the capabilities"></h2>
+            <p data-fa="فهرست مختصر کفایت می‌کند؛ تکمیل تمامی ردیف‌ها الزامی نیست." data-en="A concise list is sufficient; completing every row is not required."></p>
           </div>
         </div>
         <div class="moscow">
@@ -624,15 +645,15 @@
             <textarea class="input" id="wont-have" name="wontHave" data-ph-fa="مثلاً اپ iOS در فاز بعد…" data-ph-en="e.g. iOS app in a later phase…"></textarea>
           </div>
         </div>
-        <p class="hint" data-fa="نکته: اگر همه‌چیز «باید باشد» است، هنوز اولویت واقعی مشخص نشده." data-en="Tip: if everything is a must-have, the real priorities are not clear yet."></p>
+        <p class="hint" data-fa="توجه: چنانچه تمامی موارد در دسته «باید باشد» قرار گیرد، اولویت‌بندی عملاً انجام نشده است." data-en="Note: if every item is classified as a must-have, prioritization has effectively not taken place."></p>
       </section>
 
-      <section class="section-card tradeoff" id="section-5">
+      <section class="section-card tradeoff" id="section-5" data-key="tradeoff" data-module="tradeoff" data-nav-fa="موازنه" data-nav-en="Trade-off" hidden>
         <div class="section-heading">
           <span class="step">05</span>
           <div>
-            <h2 data-fa="بازی انتخاب دو از سه" data-en="The pick-two trade-off"></h2>
-            <p data-fa="دو اولویت اصلی را انتخاب کنید؛ تغییر هر ضلع روی دو ضلع دیگر اثر دارد." data-en="Pick your top two; changing one constraint affects the others."></p>
+            <h2 data-fa="موازنه پروژه — انتخاب دو از سه" data-en="Project trade-off — pick two of three"></h2>
+            <p data-fa="دو اولویت اصلی را انتخاب کنید؛ تغییر هر محدودیت بر دو محدودیت دیگر اثر می‌گذارد." data-en="Select your top two; changing one constraint affects the other two."></p>
           </div>
         </div>
         <div class="tradeoff-grid">
@@ -658,12 +679,12 @@
         <div id="trade-result" class="trade-result" data-fa="دو گزینه را انتخاب کنید تا اثر انتخابتان را ببینید." data-en="Choose two options to see the trade-off."></div>
       </section>
 
-      <section class="section-card" id="section-6">
+      <section class="section-card" id="section-6" data-key="technical" data-module="technical" data-nav-fa="فنی" data-nav-en="Technical" hidden>
         <div class="section-heading">
           <span class="step">06</span>
           <div>
             <h2 data-fa="زمینه فنی، داده و ریسک" data-en="Technical context, data, and risk"></h2>
-            <p data-fa="اگر نمی‌دانید، خالی بگذارید؛ پیشنهاد فنی وظیفه ماست." data-en="Leave this blank if unsure; technical recommendations are our job."></p>
+            <p data-fa="در صورت عدم اطمینان، این بخش را خالی بگذارید؛ ارائه پیشنهاد فنی بر عهده تیم ماست." data-en="If uncertain, leave this section blank; technical recommendations are our team's responsibility."></p>
           </div>
         </div>
         <div class="fields">
@@ -695,12 +716,12 @@
         </details>
       </section>
 
-      <section class="section-card" id="section-7">
+      <section class="section-card" id="section-7" data-key="design" data-module="design" data-nav-fa="طراحی" data-nav-en="Design" hidden>
         <div class="section-heading">
           <span class="step">07</span>
           <div>
-            <h2 data-fa="ظاهر، محتوا و دارایی‌ها" data-en="Design, content, and assets"></h2>
-            <p data-fa="حال‌وهوای مطلوب را انتخاب کنید؛ حداکثر سه مورد." data-en="Choose the desired feel—up to three."></p>
+            <h2 data-fa="طراحی، محتوا و دارایی‌ها" data-en="Design, content, and assets"></h2>
+            <p data-fa="جهت‌گیری بصری مطلوب را انتخاب کنید؛ حداکثر سه مورد." data-en="Select the desired visual direction—up to three."></p>
           </div>
         </div>
         <span class="group-label"><span data-fa="حال‌وهوای بصری مطلوب" data-en="Desired visual direction"></span><span class="count" data-count="vibe" data-max="3"></span></span>
@@ -745,12 +766,12 @@
         </details>
       </section>
 
-      <section class="section-card" id="section-8">
+      <section class="section-card" id="section-8" data-key="budget" data-module="budget" data-nav-fa="بودجه" data-nav-en="Budget" hidden>
         <div class="section-heading">
           <span class="step">08</span>
           <div>
             <h2 data-fa="بودجه، زمان و همکاری" data-en="Budget, timing, and collaboration"></h2>
-            <p data-fa="بودجه اجباری نیست؛ می‌توانید برآورد را به ما بسپارید." data-en="Budget is optional; you can ask us to estimate it."></p>
+            <p data-fa="اعلام بودجه الزامی نیست؛ در صورت تمایل، برآورد را به ما واگذار کنید." data-en="Declaring a budget is optional; if preferred, delegate the estimate to us."></p>
           </div>
         </div>
         <div class="fields">
@@ -790,12 +811,87 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-9">
+      <section class="section-card" id="section-seo" data-key="seo" data-module="seo" data-nav-fa="سئو" data-nav-en="SEO" hidden>
+        <div class="section-heading">
+          <span class="step">10</span>
+          <div>
+            <h2 data-fa="سئو و دیده‌شدن" data-en="SEO and visibility"></h2>
+            <p data-fa="پاسخ‌های این بخش مبنای برنامه CodiRank قرار می‌گیرد؛ پوشش‌دهنده SEO (موتورهای جست‌وجو)، AEO (موتورهای پاسخ) و GEO (موتورهای مولد مانند ChatGPT)." data-en="These answers form the basis of the CodiRank plan, covering SEO (search engines), AEO (answer engines), and GEO (generative engines such as ChatGPT)."></p>
+          </div>
+        </div>
+        <div class="fields">
+          <div>
+            <span class="group-label"><span data-fa="اهداف اصلی از سئو" data-en="Primary SEO objectives"></span><span class="count" data-count="seoGoal" data-max="3"></span></span>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="seoGoal" value="organic"><span data-fa="افزایش ترافیک ارگانیک" data-en="Increase organic traffic"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="keywords"><span data-fa="کسب رتبه برای کلمات کلیدی مشخص" data-en="Rank for specific keywords"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="local"><span data-fa="سئو محلی و حضور در نقشه" data-en="Local SEO and map presence"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="ai"><span data-fa="دیده‌شدن در پاسخ‌های هوش مصنوعی (AEO / GEO)" data-en="Visibility in AI answers (AEO / GEO)"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="technical"><span data-fa="رفع مشکلات فنی سئو" data-en="Resolve technical SEO issues"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="content"><span data-fa="استراتژی و تولید محتوا" data-en="Content strategy and production"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="audit"><span data-fa="ممیزی و تحلیل وضعیت فعلی" data-en="Audit and analysis of current state"></span></label>
+              <label class="choice"><input type="checkbox" name="seoGoal" value="unsure"><span data-fa="نیازمند مشاوره برای تعیین هدف" data-en="Need consultation to define goals"></span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="seo-keywords"><span data-fa="کلمات کلیدی یا موضوعات هدف" data-en="Target keywords or topics"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <textarea class="input" id="seo-keywords" name="seoKeywords" data-ph-fa="مثلاً «طراحی سایت فروشگاهی»، «کلینیک ارتودنسی در تهران»، «نرم‌افزار مدیریت رستوران»…" data-ph-en="e.g. “e-commerce web design”, “orthodontic clinic in Berlin”, “restaurant management software”…"></textarea>
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label for="seo-markets"><span data-fa="بازار جغرافیایی و زبان‌های هدف" data-en="Target geography and languages"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="seo-markets" name="seoMarkets" data-ph-fa="مثلاً ایران و فارسی؛ یا بازار بین‌المللی و انگلیسی" data-ph-en="e.g. domestic market, or international and English">
+            </div>
+            <div class="field">
+              <label for="seo-competitors"><span data-fa="رقبای اصلی در نتایج جست‌وجو" data-en="Main competitors in search results"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+              <input class="input" id="seo-competitors" name="seoCompetitors" data-ph-fa="نام یا نشانی دو تا سه رقیب" data-ph-en="Names or URLs of two or three competitors">
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label for="seo-history" data-fa="سابقه فعالیت سئو" data-en="SEO track record"></label>
+              <select class="input" id="seo-history" name="seoHistory">
+                <option value="" data-fa="مشخص نیست" data-en="Not sure"></option>
+                <option value="ongoing" data-fa="به‌صورت مستمر انجام شده است" data-en="Ongoing and continuous"></option>
+                <option value="partial" data-fa="به‌صورت پراکنده یا محدود انجام شده" data-en="Sporadic or limited"></option>
+                <option value="none" data-fa="تاکنون انجام نشده است" data-en="Not done so far"></option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="seo-content" data-fa="وضعیت تولید محتوا" data-en="Content production status"></label>
+              <select class="input" id="seo-content" name="seoContent">
+                <option value="" data-fa="مشخص نیست" data-en="Not sure"></option>
+                <option value="internal" data-fa="تیم محتوای داخلی داریم" data-en="In-house content team"></option>
+                <option value="outsourced" data-fa="برون‌سپاری می‌کنیم" data-en="Outsourced"></option>
+                <option value="need" data-fa="به خدمات تولید محتوا نیاز داریم" data-en="Content services required"></option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <span class="group-label"><span data-fa="دسترسی‌ها و ابزارهای موجود" data-en="Available access and tooling"></span></span>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="seoAccess" value="searchconsole"><span data-fa="Google Search Console متصل است" data-en="Google Search Console is connected"></span></label>
+              <label class="choice"><input type="checkbox" name="seoAccess" value="analytics"><span data-fa="ابزار آمار بازدید فعال است" data-en="Web analytics is in place"></span></label>
+              <label class="choice"><input type="checkbox" name="seoAccess" value="cms"><span data-fa="دسترسی مدیریت سایت در اختیار است" data-en="CMS or site admin access is available"></span></label>
+              <label class="choice"><input type="checkbox" name="seoAccess" value="none"><span data-fa="هیچ‌کدام / اطلاع ندارم" data-en="None / not sure"></span></label>
+            </div>
+          </div>
+        </div>
+        <details class="advanced">
+          <summary data-fa="سوابق و ملاحظات تکمیلی سئو" data-en="Additional SEO history and considerations"></summary>
+          <div class="advanced-content field">
+            <label for="seo-notes"><span data-fa="ملاحظات تکمیلی" data-en="Additional notes"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
+            <textarea class="input" id="seo-notes" name="seoNotes" data-ph-fa="افت ناگهانی رتبه، جریمه گوگل، مهاجرت دامنه، تغییر ساختار سایت، همکاری قبلی با آژانس…" data-ph-en="Sudden ranking drops, penalties, domain migration, site restructuring, previous agency work…"></textarea>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-card" id="section-9" data-key="contact" data-nav-fa="تماس" data-nav-en="Contact">
         <div class="section-heading">
           <span class="step">09</span>
           <div>
-            <h2 data-fa="آخرین نکته و راه ارتباطی" data-en="Final notes and contact"></h2>
-            <p data-fa="هر چیزی که نگفتیم یا نباید فراموش شود." data-en="Anything we missed or should not forget."></p>
+            <h2 data-fa="نکات پایانی و راه ارتباطی" data-en="Final notes and contact"></h2>
+            <p data-fa="موارد تکمیلی، ملاحظات و اطلاعات تماس." data-en="Final considerations and contact details."></p>
           </div>
         </div>
         <div class="fields">
@@ -811,7 +907,7 @@
             <div class="field">
               <label for="contact-way"><span data-fa="راه ارتباطی (ایمیل، تلگرام یا شماره)" data-en="Contact (email, Telegram, or phone)"></span> <span class="optional" data-fa="(اختیاری)" data-en="(optional)"></span></label>
               <input class="input" id="contact-way" name="contactWay" autocomplete="email" data-ph-fa="email@example.com، @username یا ۰۹…" data-ph-en="email@example.com, @username, or phone">
-              <p class="hint" data-fa="برای اینکه بتوانیم سریع پاسخ دهیم، یک راه ارتباطی بگذارید." data-en="Leave one contact method so we can reply quickly."></p>
+              <p class="hint" data-fa="برای پیگیری و اعلام نتیجه بررسی، ثبت حداقل یک راه ارتباطی توصیه می‌شود." data-en="Providing at least one contact method is recommended for follow-up."></p>
             </div>
           </div>
           <div class="notice" data-fa="اطلاعات فرم به هیچ سروری ارسال نمی‌شود. پاسخ‌ها فقط در مرورگر شما ذخیره می‌شوند و هنگام دانلود یا اشتراک‌گذاری، PDF روی همان دستگاه ساخته می‌شود." data-en="This form sends nothing to a server. Answers stay in your browser, and the PDF is generated locally when you download or share it."></div>
@@ -837,7 +933,7 @@
       <div class="modal-head">
         <div>
           <h3 id="review-title" data-fa="مرور نهایی پاسخ‌ها" data-en="Final review of your answers"></h3>
-          <p data-fa="این دقیقاً همان محتوایی است که در PDF قرار می‌گیرد. اگر چیزی جا مانده، «ویرایش» را بزنید." data-en="This is exactly what will appear in the PDF. Choose “Edit” if anything is missing."></p>
+          <p data-fa="این محتوا عیناً در سند PDF درج می‌شود. در صورت نیاز به اصلاح، گزینه «ویرایش پاسخ‌ها» را انتخاب کنید." data-en="This content appears verbatim in the PDF. Choose “Edit answers” if any changes are needed."></p>
         </div>
         <button class="modal-close" type="button" onclick="closeReview()" aria-label="Close">✕</button>
       </div>
@@ -853,6 +949,8 @@
   <script>
     const TELEGRAM_USERNAME = "AMIzadirad";
     const STORAGE_KEY = "codiman-software-brief-v2";
+    const SEO_ONLY = new URLSearchParams(location.search).get("mode") === "seo" || location.hash === "#seo-bref";
+    const SEO_MODE_KEYS = ["basics", "seo", "contact"];
     const form = document.getElementById("brief-form");
     let lang = localStorage.getItem(`${STORAGE_KEY}:lang`) || "fa";
     let toastTimer;
@@ -932,84 +1030,132 @@
         ready: ["کاملاً آماده", "Fully ready"],
         partial: ["بخشی آماده", "Partly ready"],
         none: ["نیازمند کمک برای تولید", "Needs content support"]
+      },
+      module: {
+        users: ["کاربران و مسیر اصلی", "Users and core journey"],
+        priorities: ["اولویت‌بندی قابلیت‌ها", "Feature prioritization"],
+        tradeoff: ["موازنه پروژه", "Project trade-off"],
+        technical: ["زمینه فنی، داده و ریسک", "Technical context, data, and risk"],
+        design: ["طراحی، محتوا و برند", "Design, content, and brand"],
+        budget: ["بودجه و زمان‌بندی", "Budget and timing"],
+        seo: ["سئو و دیده‌شدن", "SEO and visibility"]
+      },
+      seoGoal: {
+        organic: ["افزایش ترافیک ارگانیک", "Increase organic traffic"],
+        keywords: ["کسب رتبه برای کلمات کلیدی مشخص", "Rank for specific keywords"],
+        local: ["سئو محلی و حضور در نقشه", "Local SEO and map presence"],
+        ai: ["دیده‌شدن در پاسخ‌های هوش مصنوعی (AEO / GEO)", "Visibility in AI answers (AEO / GEO)"],
+        technical: ["رفع مشکلات فنی سئو", "Resolve technical SEO issues"],
+        content: ["استراتژی و تولید محتوا", "Content strategy and production"],
+        audit: ["ممیزی و تحلیل وضعیت فعلی", "Audit and analysis of current state"],
+        unsure: ["نیازمند مشاوره برای تعیین هدف", "Need consultation to define goals"]
+      },
+      seoHistory: {
+        ongoing: ["به‌صورت مستمر انجام شده", "Ongoing and continuous"],
+        partial: ["پراکنده یا محدود", "Sporadic or limited"],
+        none: ["تاکنون انجام نشده", "Not done so far"]
+      },
+      seoContent: {
+        internal: ["تیم محتوای داخلی", "In-house content team"],
+        outsourced: ["برون‌سپاری", "Outsourced"],
+        need: ["نیازمند خدمات تولید محتوا", "Content services required"]
+      },
+      seoAccess: {
+        searchconsole: ["Google Search Console متصل است", "Google Search Console is connected"],
+        analytics: ["ابزار آمار بازدید فعال است", "Web analytics is in place"],
+        cms: ["دسترسی مدیریت سایت در اختیار است", "CMS or site admin access is available"],
+        none: ["هیچ‌کدام / اطلاع ندارم", "None / not sure"]
       }
     };
 
     const reportCopy = {
       fa: {
         title: "بریف پروژه نرم‌افزاری",
+        seoTitle: "بریف سئو و دیده‌شدن",
         empty: "اعلام نشده",
         yes: "بله",
         sections: [
-          ["پروژه در یک نگاه", [["نام پروژه / برند","projectName"],["مرحله کسب‌وکار","organizationType"],["مسئله اصلی","problem"],["محصول یا لینک فعلی","existing"]]],
-          ["هدف و محصول", [["نوع محصول","productType"],["نتیجه مطلوب","outcome"],["معیار موفقیت","successMetric"]]],
-          ["کاربران و تجربه", [["کاربر اصلی","audience"],["مسیر اصلی کاربر","coreJourney"],["نقش‌ها و دسترسی‌ها","roles"]]],
-          ["اولویت قابلیت‌ها", [["باید باشد","mustHave"],["بهتر است باشد","shouldHave"],["اگر شد","couldHave"],["فعلاً خارج از نسخه","wontHave"]]],
-          ["موازنه پروژه", [["دو اولویت منتخب","tradeoff"],["اثر انتخاب","tradeoffResult"]]],
-          ["فناوری، داده و ریسک", [["یکپارچه‌سازی‌ها","integrations"],["موارد حساس","risk"],["محدودیت‌های فنی","constraints"],["نیازهای ویژه","nonFunctional"]]],
-          ["طراحی و محتوا", [["حال‌وهوای بصری","vibe"],["نمونه‌های مرجع","references"],["وضعیت برند","brandAssets"],["وضعیت محتوا","contentStatus"]]],
-          ["بودجه و زمان", [["ترجیح بودجه","budgetMode"],["بازه بودجه","budgetRange"],["زمان‌بندی","timelineMode"],["تاریخ هدف","targetDate"],["تصمیم‌گیرنده","decision"]]],
-          ["اطلاعات تکمیلی", [["نکات و خطوط قرمز","notes"],["نام تماس","contactName"],["راه ارتباطی","contactWay"]]]
+          ["پروژه در یک نگاه", "basics", [["نام پروژه / برند","projectName"],["مرحله کسب‌وکار","organizationType"],["مسئله اصلی","problem"],["محصول یا لینک فعلی","existing"]]],
+          ["دامنه بریف", "scope", [["بخش‌های انتخاب‌شده","modules"]]],
+          ["هدف و محصول", "product", [["نوع محصول","productType"],["نتیجه مطلوب","outcome"],["معیار موفقیت","successMetric"]]],
+          ["کاربران و تجربه", "users", [["کاربر اصلی","audience"],["مسیر اصلی کاربر","coreJourney"],["نقش‌ها و دسترسی‌ها","roles"]]],
+          ["اولویت قابلیت‌ها", "priorities", [["باید باشد","mustHave"],["بهتر است باشد","shouldHave"],["اگر شد","couldHave"],["فعلاً خارج از نسخه","wontHave"]]],
+          ["موازنه پروژه", "tradeoff", [["دو اولویت منتخب","tradeoff"],["اثر انتخاب","tradeoffResult"]]],
+          ["فناوری، داده و ریسک", "technical", [["یکپارچه‌سازی‌ها","integrations"],["موارد حساس","risk"],["محدودیت‌های فنی","constraints"],["نیازهای ویژه","nonFunctional"]]],
+          ["طراحی و محتوا", "design", [["حال‌وهوای بصری","vibe"],["نمونه‌های مرجع","references"],["وضعیت برند","brandAssets"],["وضعیت محتوا","contentStatus"]]],
+          ["بودجه و زمان", "budget", [["ترجیح بودجه","budgetMode"],["بازه بودجه","budgetRange"],["زمان‌بندی","timelineMode"],["تاریخ هدف","targetDate"],["تصمیم‌گیرنده","decision"]]],
+          ["سئو و دیده‌شدن (CodiRank)", "seo", [["اهداف سئو","seoGoal"],["کلمات و موضوعات هدف","seoKeywords"],["بازار و زبان‌های هدف","seoMarkets"],["رقبای اصلی","seoCompetitors"],["سابقه سئو","seoHistory"],["وضعیت تولید محتوا","seoContent"],["دسترسی‌ها و ابزارها","seoAccess"],["ملاحظات تکمیلی سئو","seoNotes"]]],
+          ["اطلاعات تکمیلی", "contact", [["نکات و خطوط قرمز","notes"],["نام تماس","contactName"],["راه ارتباطی","contactWay"]]]
         ],
         footer: "این سند به‌صورت محلی با فرم CodiMan ساخته شده است."
       },
       en: {
         title: "Software Project Brief",
+        seoTitle: "SEO & Visibility Brief",
         empty: "Not provided",
         yes: "Yes",
         sections: [
-          ["Project at a glance", [["Project / brand name","projectName"],["Organization stage","organizationType"],["Core problem","problem"],["Existing product or link","existing"]]],
-          ["Product and outcomes", [["Product type","productType"],["Desired outcomes","outcome"],["Success metric","successMetric"]]],
-          ["Users and experience", [["Primary user","audience"],["Core user journey","coreJourney"],["Roles and permissions","roles"]]],
-          ["Feature priorities", [["Must have","mustHave"],["Should have","shouldHave"],["Could have","couldHave"],["Not this release","wontHave"]]],
-          ["Project trade-off", [["Selected priorities","tradeoff"],["Expected effect","tradeoffResult"]]],
-          ["Technology, data, and risk", [["Integrations","integrations"],["Risk flags","risk"],["Technical constraints","constraints"],["Special requirements","nonFunctional"]]],
-          ["Design and content", [["Visual direction","vibe"],["References","references"],["Brand assets","brandAssets"],["Content status","contentStatus"]]],
-          ["Budget and timing", [["Budget preference","budgetMode"],["Budget range","budgetRange"],["Timeline preference","timelineMode"],["Target date","targetDate"],["Decision maker","decision"]]],
-          ["Additional information", [["Notes and red lines","notes"],["Contact name","contactName"],["Contact method","contactWay"]]]
+          ["Project at a glance", "basics", [["Project / brand name","projectName"],["Organization stage","organizationType"],["Core problem","problem"],["Existing product or link","existing"]]],
+          ["Brief scope", "scope", [["Selected sections","modules"]]],
+          ["Product and outcomes", "product", [["Product type","productType"],["Desired outcomes","outcome"],["Success metric","successMetric"]]],
+          ["Users and experience", "users", [["Primary user","audience"],["Core user journey","coreJourney"],["Roles and permissions","roles"]]],
+          ["Feature priorities", "priorities", [["Must have","mustHave"],["Should have","shouldHave"],["Could have","couldHave"],["Not this release","wontHave"]]],
+          ["Project trade-off", "tradeoff", [["Selected priorities","tradeoff"],["Expected effect","tradeoffResult"]]],
+          ["Technology, data, and risk", "technical", [["Integrations","integrations"],["Risk flags","risk"],["Technical constraints","constraints"],["Special requirements","nonFunctional"]]],
+          ["Design and content", "design", [["Visual direction","vibe"],["References","references"],["Brand assets","brandAssets"],["Content status","contentStatus"]]],
+          ["Budget and timing", "budget", [["Budget preference","budgetMode"],["Budget range","budgetRange"],["Timeline preference","timelineMode"],["Target date","targetDate"],["Decision maker","decision"]]],
+          ["SEO and visibility (CodiRank)", "seo", [["SEO objectives","seoGoal"],["Target keywords and topics","seoKeywords"],["Target geography and languages","seoMarkets"],["Main competitors","seoCompetitors"],["SEO track record","seoHistory"],["Content production","seoContent"],["Access and tooling","seoAccess"],["Additional SEO notes","seoNotes"]]],
+          ["Additional information", "contact", [["Notes and red lines","notes"],["Contact name","contactName"],["Contact method","contactWay"]]]
         ],
         footer: "This document was generated locally using the CodiMan brief."
       }
     };
 
-    const NAV_LABELS = [
-      ["معرفی", "Basics"],
-      ["محصول", "Product"],
-      ["کاربران", "Users"],
-      ["اولویت‌ها", "Priorities"],
-      ["موازنه", "Trade-off"],
-      ["فنی", "Technical"],
-      ["طراحی", "Design"],
-      ["بودجه", "Budget"],
-      ["تماس", "Contact"]
-    ];
+    const allSections = [...form.querySelectorAll("section.section-card")];
+    const LIMITS = { productType: 2, outcome: 3, vibe: 3, tradeoff: 2, seoGoal: 3 };
 
-    const sections = [...form.querySelectorAll("section.section-card")];
-    const stepBadges = sections.map(section => section.querySelector(".step"));
-    const LIMITS = { productType: 2, outcome: 3, vibe: 3, tradeoff: 2 };
+    const sectionChecks = {
+      basics: () => Boolean(value("projectName") && value("problem")),
+      scope: () => checkedValues("module").length > 0,
+      product: () => Boolean(checkedValues("productType").length || checkedValues("outcome").length),
+      users: () => Boolean(value("audience") || value("coreJourney") || value("roles")),
+      priorities: () => Boolean(value("mustHave") || value("shouldHave") || value("couldHave") || value("wontHave")),
+      tradeoff: () => checkedValues("tradeoff").length === 2,
+      technical: () => Boolean(value("integrations") || checkedValues("risk").length || value("constraints") || value("nonFunctional")),
+      design: () => Boolean(checkedValues("vibe").length || value("references") || value("brandAssets") || value("contentStatus")),
+      budget: () => Boolean(getRadio("budgetMode") || value("timelineMode") || value("targetDate") || value("decision")),
+      seo: () => Boolean(checkedValues("seoGoal").length || value("seoKeywords") || value("seoMarkets") || value("seoCompetitors") || value("seoHistory") || checkedValues("seoAccess").length),
+      contact: () => Boolean(value("contactWay") || value("contactName") || value("notes"))
+    };
 
-    const sectionChecks = [
-      () => Boolean(value("projectName") && value("problem")),
-      () => Boolean(checkedValues("productType").length || checkedValues("outcome").length),
-      () => Boolean(value("audience") || value("coreJourney") || value("roles")),
-      () => Boolean(value("mustHave") || value("shouldHave") || value("couldHave") || value("wontHave")),
-      () => checkedValues("tradeoff").length === 2,
-      () => Boolean(value("integrations") || checkedValues("risk").length || value("constraints") || value("nonFunctional")),
-      () => Boolean(checkedValues("vibe").length || value("references") || value("brandAssets") || value("contentStatus")),
-      () => Boolean(getRadio("budgetMode") || value("timelineMode") || value("targetDate") || value("decision")),
-      () => Boolean(value("contactWay") || value("contactName") || value("notes"))
-    ];
+    function activeModules() {
+      return checkedValues("module");
+    }
 
-    function buildStepNav() {
+    function visibleSections() {
+      return allSections.filter(section => !section.hidden);
+    }
+
+    function applyVisibility() {
+      const modules = activeModules();
+      allSections.forEach(section => {
+        if (SEO_ONLY) section.hidden = !SEO_MODE_KEYS.includes(section.dataset.key);
+        else if (section.dataset.module) section.hidden = !modules.includes(section.dataset.module);
+        else section.hidden = false;
+      });
+    }
+
+    function rebuildStepNav() {
       const nav = document.getElementById("step-nav");
-      NAV_LABELS.forEach(([fa, en], index) => {
+      nav.innerHTML = "";
+      visibleSections().forEach(section => {
         const chip = document.createElement("button");
         chip.type = "button";
         chip.className = "step-chip";
-        chip.dataset.section = String(index);
-        chip.innerHTML = `<span class="dot" aria-hidden="true"></span><span data-fa="${fa}" data-en="${en}"></span>`;
+        const label = lang === "fa" ? section.dataset.navFa : section.dataset.navEn;
+        chip.innerHTML = `<span class="dot" aria-hidden="true"></span><span data-fa="${section.dataset.navFa}" data-en="${section.dataset.navEn}">${label}</span>`;
         chip.addEventListener("click", () => {
-          sections[index].scrollIntoView({ behavior: "smooth", block: "start" });
+          section.scrollIntoView({ behavior: "smooth", block: "start" });
         });
         nav.appendChild(chip);
       });
@@ -1017,22 +1163,22 @@
 
     function updateSections() {
       const chips = document.querySelectorAll(".step-chip");
-      sectionChecks.forEach((check, index) => {
-        const done = check();
+      visibleSections().forEach((section, index) => {
+        const done = (sectionChecks[section.dataset.key] || (() => false))();
         chips[index]?.classList.toggle("done", done);
-        const badge = stepBadges[index];
+        const badge = section.querySelector(".step");
         if (badge) {
-          if (!badge.dataset.num) badge.dataset.num = badge.textContent;
           badge.classList.toggle("done", done);
-          badge.textContent = done ? "✓" : badge.dataset.num;
+          badge.textContent = done ? "✓" : String(index + 1).padStart(2, "0");
         }
       });
     }
 
     function updateActiveSection() {
       const marker = 170;
+      const current = visibleSections();
       let active = 0;
-      sections.forEach((section, index) => {
+      current.forEach((section, index) => {
         if (section.getBoundingClientRect().top <= marker) active = index;
       });
       document.querySelectorAll(".step-chip").forEach((chip, index) => {
@@ -1057,7 +1203,9 @@
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
       document.body.dir = document.documentElement.dir;
-      document.title = lang === "fa" ? "بریف پروژه نرم‌افزاری | CodiMan" : "Software Project Brief | CodiMan";
+      document.title = SEO_ONLY
+        ? (lang === "fa" ? "بریف سئو و دیده‌شدن | CodiMan" : "SEO & Visibility Brief | CodiMan")
+        : (lang === "fa" ? "بریف پروژه نرم‌افزاری | CodiMan" : "Software Project Brief | CodiMan");
       document.querySelectorAll("[data-fa][data-en]").forEach(el => {
         el.textContent = el.dataset[lang];
       });
@@ -1066,6 +1214,7 @@
       });
       document.getElementById("lang-fa").classList.toggle("active", lang === "fa");
       document.getElementById("lang-en").classList.toggle("active", lang === "en");
+      rebuildStepNav();
       updateTradeoff();
       updateProgress();
       if (!document.getElementById("review-overlay").hidden && pendingAction) renderReview();
@@ -1148,6 +1297,8 @@
       form.reset();
       localStorage.removeItem(STORAGE_KEY);
       document.getElementById("budget-range-wrap").hidden = true;
+      applyVisibility();
+      rebuildStepNav();
       updateTradeoff();
       updateProgress();
       showToast(lang === "fa" ? "پاسخ‌ها پاک شدند." : "Answers cleared.");
@@ -1158,12 +1309,24 @@
     }
 
     function updateProgress() {
-      const checkpoints = [
-        value("projectName"), value("problem"), checkedValues("productType").length,
-        checkedValues("outcome").length, value("audience"), value("coreJourney"),
-        value("mustHave"), checkedValues("tradeoff").length === 2, value("integrations"),
-        checkedValues("vibe").length, getRadio("budgetMode"), value("contactWay")
-      ];
+      const modules = activeModules();
+      const checkpoints = [value("projectName"), value("problem")];
+      if (SEO_ONLY) {
+        checkpoints.push(
+          value("existing"), checkedValues("seoGoal").length, value("seoKeywords"),
+          value("seoMarkets"), value("seoHistory"), value("contactWay")
+        );
+      } else {
+        checkpoints.push(checkedValues("productType").length, checkedValues("outcome").length);
+        if (modules.includes("users")) checkpoints.push(value("audience"), value("coreJourney"));
+        if (modules.includes("priorities")) checkpoints.push(value("mustHave"));
+        if (modules.includes("tradeoff")) checkpoints.push(checkedValues("tradeoff").length === 2);
+        if (modules.includes("technical")) checkpoints.push(value("integrations") || checkedValues("risk").length);
+        if (modules.includes("design")) checkpoints.push(checkedValues("vibe").length);
+        if (modules.includes("budget")) checkpoints.push(getRadio("budgetMode"));
+        if (modules.includes("seo")) checkpoints.push(checkedValues("seoGoal").length, value("seoKeywords"));
+        checkpoints.push(value("contactWay"));
+      }
       const pct = Math.round(checkpoints.filter(Boolean).length / checkpoints.length * 100);
       document.getElementById("progress-fill").style.width = `${pct}%`;
       document.getElementById("progress-track").setAttribute("aria-valuenow", String(pct));
@@ -1208,17 +1371,30 @@
     }
 
     function displayValue(key) {
-      if (["productType", "outcome", "tradeoff", "risk", "vibe"].includes(key)) {
+      if (["productType", "outcome", "tradeoff", "risk", "vibe", "seoGoal", "seoAccess"].includes(key)) {
         return checkedValues(key).map(code => localized(key, code)).join(lang === "fa" ? "، " : ", ");
       }
       if (["budgetMode"].includes(key)) return localized(key, getRadio(key));
-      if (["organizationType", "timelineMode", "brandAssets", "contentStatus"].includes(key)) {
+      if (["organizationType", "timelineMode", "brandAssets", "contentStatus", "seoHistory", "seoContent"].includes(key)) {
         return localized(key, value(key));
       }
       if (key === "tradeoffResult") {
         return checkedValues("tradeoff").length === 2 ? document.getElementById("trade-result").textContent : "";
       }
+      if (key === "modules") {
+        const selected = activeModules().map(code => localized("module", code)).join(lang === "fa" ? "، " : ", ");
+        return selected || (lang === "fa" ? "فقط بخش‌های پایه" : "Core sections only");
+      }
       return value(key);
+    }
+
+    function reportSections(copy) {
+      const keys = new Set(visibleSections().map(section => section.dataset.key));
+      return copy.sections.filter(([, key]) => keys.has(key));
+    }
+
+    function reportTitle(copy) {
+      return SEO_ONLY ? copy.seoTitle : copy.title;
     }
 
     function renderReview() {
@@ -1229,13 +1405,13 @@
       const notes = [];
       if (!value("contactWay")) {
         notes.push(lang === "fa"
-          ? "⚠ راه ارتباطی وارد نکرده‌اید؛ برای پیگیری سریع‌تر، پیشنهاد می‌کنیم ایمیل، تلگرام یا شماره بگذارید."
-          : "⚠ No contact method provided; adding email, Telegram, or a phone number helps us follow up quickly.");
+          ? "⚠ راه ارتباطی ثبت نشده است؛ برای پیگیری و اعلام نتیجه، افزودن ایمیل، تلگرام یا شماره تماس توصیه می‌شود."
+          : "⚠ No contact method provided; adding email, Telegram, or a phone number is recommended for follow-up.");
       }
       if (!form.elements.privacyAck.checked) {
         notes.push(lang === "fa"
-          ? "یادآوری: مطمئن شوید اطلاعات محرمانه (رمز، کلید API، اطلاعات بانکی) در پاسخ‌ها نیست."
-          : "Reminder: make sure no secrets (passwords, API keys, banking details) are included.");
+          ? "یادآوری: از عدم درج اطلاعات محرمانه (رمز عبور، کلید API، اطلاعات بانکی) در پاسخ‌ها اطمینان حاصل کنید."
+          : "Reminder: verify that no confidential information (passwords, API keys, banking details) is included.");
       }
       notes.forEach(text => {
         const note = document.createElement("div");
@@ -1245,7 +1421,7 @@
       });
 
       let emptyCount = 0;
-      copy.sections.forEach(([title, rows]) => {
+      reportSections(copy).forEach(([title, , rows]) => {
         const wrap = document.createElement("div");
         wrap.className = "review-section";
         const heading = document.createElement("h4");
@@ -1272,8 +1448,8 @@
         const info = document.createElement("div");
         info.className = "modal-note ok";
         info.textContent = lang === "fa"
-          ? `${toFa(emptyCount)} مورد اختیاری خالی مانده است؛ اشکالی ندارد، بعداً با هم کاملشان می‌کنیم.`
-          : `${emptyCount} optional answers are still empty; that is fine—we can refine them together later.`;
+          ? `${toFa(emptyCount)} مورد اختیاری تکمیل نشده است؛ این موارد در جلسه آغاز پروژه قابل بررسی و تکمیل خواهند بود.`
+          : `${emptyCount} optional items remain incomplete; they can be reviewed and completed during the project kickoff.`;
         body.appendChild(info);
       }
 
@@ -1313,7 +1489,7 @@
     function safeFilename() {
       const base = value("projectName") || "project";
       const safe = base.replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "_").slice(0, 60);
-      return `CodiMan_Brief_${safe}.pdf`;
+      return `CodiMan_${SEO_ONLY ? "SEO_Brief" : "Brief"}_${safe}.pdf`;
     }
 
     function wrapCanvasText(ctx, text, maxWidth) {
@@ -1393,8 +1569,8 @@
         ctx.fillText(date, rtl ? M : W - M, 66);
 
         const title = continuation
-          ? (rtl ? "ادامه بریف پروژه" : "Project brief — continued")
-          : `${copy.title} — ${value("projectName")}`;
+          ? (rtl ? "ادامه بریف" : "Brief — continued")
+          : `${reportTitle(copy)} — ${value("projectName")}`;
         setText(38, 800, "#14221f");
         alignStart();
         const titleLines = wrapCanvasText(ctx, title, W - (M * 2));
@@ -1449,7 +1625,7 @@
       }
 
       newPage();
-      copy.sections.forEach(([title, rows]) => drawSection(title, rows));
+      reportSections(copy).forEach(([title, , rows]) => drawSection(title, rows));
       ensureSpace(55);
       ctx.fillStyle = "#dce7e3";
       ctx.fillRect(M, y, W - (M * 2), 2);
@@ -1496,8 +1672,10 @@
             closeReview();
             await navigator.share({
               files: [file],
-              title: reportCopy[lang].title,
-              text: lang === "fa" ? "بریف پروژه برای CodiMan" : "Project brief for CodiMan"
+              title: reportTitle(reportCopy[lang]),
+              text: SEO_ONLY
+                ? (lang === "fa" ? "بریف سئو برای CodiMan" : "SEO brief for CodiMan")
+                : (lang === "fa" ? "بریف پروژه برای CodiMan" : "Project brief for CodiMan")
             });
           } else {
             const url = URL.createObjectURL(blob);
@@ -1544,6 +1722,14 @@
       if (event.target.name === "budgetMode") {
         document.getElementById("budget-range-wrap").hidden = event.target.value !== "range";
       }
+      if (event.target.name === "module") {
+        applyVisibility();
+        rebuildStepNav();
+        const moduleName = localized("module", event.target.value);
+        showToast(event.target.checked
+          ? (lang === "fa" ? `بخش «${moduleName}» به فرم افزوده شد.` : `Section “${moduleName}” added to the form.`)
+          : (lang === "fa" ? `بخش «${moduleName}» از فرم حذف شد.` : `Section “${moduleName}” removed from the form.`));
+      }
       saveDraft();
       updateProgress();
     });
@@ -1564,12 +1750,37 @@
       });
     }, { passive: true });
 
-    buildStepNav();
+    function applySeoModeCopy() {
+      const swap = (selector, fa, en) => {
+        const el = document.querySelector(selector);
+        if (!el) return;
+        el.dataset.fa = fa;
+        el.dataset.en = en;
+      };
+      swap("#hero-title", "بریف سئو و دیده‌شدن", "SEO & visibility brief");
+      swap("#hero-lead",
+        "این فرم برای برنامه‌ریزی سئو و دیده‌شدن طراحی شده است و پاسخ‌های آن مبنای تحلیل و پیشنهاد CodiRank قرار می‌گیرد؛ پوشش‌دهنده SEO، AEO و GEO. تکمیل آن به دانش فنی نیاز ندارد.",
+        "This form is designed for SEO and visibility planning; the answers form the basis of the CodiRank analysis and proposal, covering SEO, AEO, and GEO. No technical background is required.");
+      swap('label[for="problem"] span[data-fa]',
+        "مهم‌ترین چالش فعلی در دیده‌شدن و جذب مخاطب چیست؟",
+        "What is the main challenge in visibility and audience acquisition today?");
+      const problem = document.getElementById("problem");
+      problem.dataset.phFa = "مثلاً ترافیک سایت پایین است، رقبا در نتایج بالاتر هستند یا مشتریان ما را در جست‌وجو پیدا نمی‌کنند.";
+      problem.dataset.phEn = "e.g. low site traffic, competitors ranking higher, or customers not finding us in search.";
+      swap('label[for="existing"] span[data-fa]', "نشانی وب‌سایت", "Website URL");
+      const existing = document.getElementById("existing");
+      existing.dataset.phFa = "https://example.com";
+      existing.dataset.phEn = "https://example.com";
+    }
+
     enforceLimit("productType", LIMITS.productType);
     enforceLimit("outcome", LIMITS.outcome);
     enforceLimit("vibe", LIMITS.vibe);
     enforceLimit("tradeoff", LIMITS.tradeoff);
+    enforceLimit("seoGoal", LIMITS.seoGoal);
     restoreDraft();
+    if (SEO_ONLY) applySeoModeCopy();
+    applyVisibility();
     document.getElementById("budget-range-wrap").hidden = getRadio("budgetMode") !== "range";
     setLanguage(lang);
   </script>
